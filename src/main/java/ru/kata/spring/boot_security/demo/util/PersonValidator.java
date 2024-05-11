@@ -27,6 +27,8 @@ public class PersonValidator implements Validator {
 
         if (peopleService.getUserByUsername(person.getUserName()).isPresent()) {
             errors.rejectValue("userName", "", "Это имя пользователя уже занято!");
+        } else if (!peopleService.isEmailUnique(person.getEmail(), person.getId())) {
+            errors.rejectValue("email", "", "Пользователь с такой эл. почтой уже зарегистрирован!");
         }
     }
 }

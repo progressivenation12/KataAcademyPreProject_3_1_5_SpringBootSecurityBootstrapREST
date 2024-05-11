@@ -6,21 +6,23 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
 
 @Controller
 public class AdminController {
+    private final PersonValidator personValidator;
     private final PeopleService peopleService;
     private final RoleService roleService;
 
 
-    public AdminController(PeopleService peopleService, RoleService roleService) {
+    public AdminController(PersonValidator personValidator, PeopleService peopleService, RoleService roleService) {
+        this.personValidator = personValidator;
         this.peopleService = peopleService;
         this.roleService = roleService;
     }
@@ -29,18 +31,6 @@ public class AdminController {
     public String getAllUsers(Model model) {
         model.addAttribute("people", peopleService.getUsersList());
         return "users/admin";
-    }
-
-    @GetMapping("/admin/add")
-    public String addUser(@RequestParam("id") Integer id, Model model) {
-        model.addAttribute("roles",roleService.getAllRoles());
-        if(id==null) {
-            model.addAttribute("user", new Person());
-        }else {
-            model.addAttribute("user",peopleService.getUserByID(id));
-
-        }
-        return "auth/registration";
     }
 
     @GetMapping("/admin/edit")
@@ -54,13 +44,10 @@ public class AdminController {
     public String updateUser(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult,
                              @RequestParam("id") int id) {
 
-        if (!peopleService.isEmailUnique(person.getEmail(), id)) {
-            bindingResult.rejectValue("email", "duplicate", "Электронная почта уже используется другим пользователем!");
-        }
-
         if (bindingResult.hasErrors()) {
             return "users/editUser";
         }
+
         peopleService.updateUser(id, person);
         return "redirect:/admin";
     }

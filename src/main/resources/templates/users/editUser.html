@@ -134,7 +134,6 @@
                         th:value="${role.id}"
                         th:text="${role.roleName}">Choose role</option>
             </select>
-            <div style="color:red" th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
         </div>
         <div class="polya">
             <input type="hidden" th:field="*{password}">

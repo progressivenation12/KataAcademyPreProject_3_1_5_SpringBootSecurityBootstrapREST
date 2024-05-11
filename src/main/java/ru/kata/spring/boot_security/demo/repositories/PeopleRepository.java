@@ -10,7 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
-    Person findByUserName(String userName);
+    @Query(value = "select person from Person person join fetch person.roleSet where person.userName=:username")
+    Person findByUserName(@Param("username") String userName);
 
     Person findByEmail(String email);
 }

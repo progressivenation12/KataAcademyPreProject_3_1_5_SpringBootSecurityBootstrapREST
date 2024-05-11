@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface PeopleService {
     List<Person> getUsersList();
 
-    Optional<Person> getUserByUsername(String userName);
+    Person getUserByUsername(String userName);
 
     Person getUserByID(int id);
 

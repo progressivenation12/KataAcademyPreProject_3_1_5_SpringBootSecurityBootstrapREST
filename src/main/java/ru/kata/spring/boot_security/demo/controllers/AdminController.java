@@ -16,13 +16,11 @@ import javax.validation.Valid;
 
 @Controller
 public class AdminController {
-    private final PersonValidator personValidator;
     private final PeopleService peopleService;
     private final RoleService roleService;
 
 
-    public AdminController(PersonValidator personValidator, PeopleService peopleService, RoleService roleService) {
-        this.personValidator = personValidator;
+    public AdminController(PeopleService peopleService, RoleService roleService) {
         this.peopleService = peopleService;
         this.roleService = roleService;
     }

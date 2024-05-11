@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background-color: #FEFDED
+        }
+
+        a {
+            text-align: center;
+            color: #8CC0DE;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FA7070;
+            font-family: "Roboto Medium", serif;
+        }
+
+        th {
+            padding-bottom: 10px;
+            width: fit-content;
+            padding-right: 5vh;
+            color: #508D69;
+            font-family: "Roboto", serif;
+        }
+
+        td {
+            width: fit-content;
+            color: #000000;
+            padding-right: 5vh;
+            font-family: "Roboto", serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 100px;
+        }
+
+        .btn {
+            display: flex;
+            font-size: 14px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Roboto", serif;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn_red {
+            display: flex;
+            font-size: 14px;
+            padding: 10px 20px;
+            background-color: #FF6969;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Roboto", serif;
+            justify-content: center;
+        }
+
+        .btn_red:hover {
+            background-color: #BB2525;
+        }
+
+        .btn_green {
+            display: flex;
+            font-size: 14px;
+            padding: 10px 20px;
+            background-color: #7ABA78;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Roboto", serif;
+            justify-content: center;
+        }
+
+        .btn_green:hover {
+            background-color: #0A6847;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Hello, this is the admin page!</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="person : ${people}">
+            <td th:text="${person.getId()}">Id</td>
+            <td th:text="${person.getUserName()}">Username</td>
+            <td th:text="${person.getAge()}">Age</td>
+            <td th:text="${person.getEmail()}">Email</td>
+            <td>
+                <ul>
+                    <li th:each="role : ${person.roleSet}" th:text="${role.roleName}">Role</li>
+                </ul>
+            </td>
+            <td>
+                <a th:href="@{/admin/edit(id=${person.getId()})}" th:text="Редактировать" class="btn_green">Редактировать</a>
+            </td>
+            <td>
+                <form th:method="POST" th:action="@{/admin/delete(id=${person.getId()})}">
+                    <input type="submit" value="Удалить" class="btn_red"/>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div class="btn-container">
+
+        <br/>
+        <a href="/auth/registration" class="btn">Создать аккаунт</a>
+        <br/>
+        <div class="btn-container">
+            <form th:action="@{/logout}" th:method="POST">
+                <input type="submit" value="Выход из системы" class="btn">
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

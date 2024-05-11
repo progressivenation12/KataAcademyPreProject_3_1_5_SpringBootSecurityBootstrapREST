@@ -1,0 +1,125 @@
+package ru.kata.spring.boot_security.demo.models;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "Person")
+public class Person {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @NotBlank(message = "Поле не должно быть пустым!")
+    @Size(min = 2, max = 25, message = "Имя и фамилия должны содержать от 2 до 25 символов!")
+    @Column(name = "user_name", unique = true)
+    private String userName;
+
+    @NotNull(message = "Поле не должно быть пустым!")
+    @Min(value = 0, message = "Возраст не должен быть меньше 0!")
+    @Max(value = 150, message = "Возраст не должен превышать 155 лет!")
+    @Column(name = "age")
+    private int age;
+
+    @NotBlank(message = "Поле не должно быть пустым!")
+    @Email(message = "Электронная почта должна быть действительной!")
+    @Column(name = "email")
+    private String email;
+
+    @NotBlank(message = "Поле не должно быть пустым!")
+    @Column(name = "password")
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "person_role",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roleSet = new HashSet<>();
+
+    public Person() {
+    }
+
+    public Person(int id, String userName, int age, String email) {
+        this.id = id;
+        this.userName = userName;
+        this.age = age;
+        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoleSet() {
+        return roleSet;
+    }
+
+    public void setRoleSet(Set<Role> roleSet) {
+        this.roleSet = roleSet;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+               "id=" + id +
+               ", userName='" + userName + '\'' +
+               ", age=" + age +
+               ", email='" + email + '\'' +
+               ", password='" + password + '\'' +
+               ", roleSet=" + roleSet +
+               '}';
+    }
+}

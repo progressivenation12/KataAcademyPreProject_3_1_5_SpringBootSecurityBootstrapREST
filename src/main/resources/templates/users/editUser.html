@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background-color: #FEFDED
+        }
+
+        a {
+            text-align: center;
+            color: #8CC0DE;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FA7070;
+            font-family: "Roboto Medium", serif;
+        }
+
+        th {
+            padding-bottom: 10px;
+            width: fit-content;
+            padding-right: 5vh;
+            color: #508D69;
+            font-family: "Roboto", serif;
+        }
+
+        td {
+            width: fit-content;
+            color: #000000;
+            padding-right: 5vh;
+            font-family: "Roboto", serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 100px;
+        }
+
+        .polya {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            font-family: "Roboto Medium", serif;
+        }
+
+        .polya label {
+            text-align: center;
+            margin-bottom: 1vh;
+            color: #FA7070;
+            font-family: "Roboto", serif;
+        }
+
+        .polya input {
+            text-align: center;
+            margin-bottom: .5vh;
+            color: black;
+        }
+
+        .polya select {
+            width: 177px;
+            height: 42px;
+            text-align: center;
+            margin-bottom: .5vh;
+            color: black;
+        }
+
+        .btn {
+            display: flex;
+            font-size: 14px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Roboto", serif;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="f-heading">Редактировать пользователя</h1>
+    <form th:method="POST" th:action="@{/admin/update(id=${person.getId()})}" th:object="${person}">
+        <div class="polya">
+            <label for="userName">Имя пользователя: </label>
+            <input type="text" id="userName" th:field="*{userName}" placeholder="Username" required>
+            <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">userName Error</div>
+        </div>
+        <div class="polya">
+            <label for="age">Возраст: </label>
+            <input type="number" id="age" th:field="*{age}" placeholder="Age" required>
+            <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age Error</div>
+        </div>
+        <div class="polya">
+            <label for="email">Электронная почта: </label>
+            <input type="email" id="email" th:field="*{email}" placeholder="Email" required>
+            <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+        </div>
+        <div class="polya">
+            <label for="role">Роль: </label>
+            <label th:each="role : ${person.roleSet}" th:text="${role}"></label>
+            <select th:field="*{roleSet}" id="role" class="select-style" multiple>
+                <option th:each="role : ${roles}"
+                        th:value="${role.id}"
+                        th:text="${role.roleName}">Choose role</option>
+            </select>
+            <div style="color:red" th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
+        </div>
+        <div class="polya">
+            <input type="hidden" th:field="*{password}">
+            <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+        </div>
+        <br/>
+        <div class="btn-container">
+            <input type="submit" value="Обновление пользователя" class="btn"/>
+        </div>
+        <div class="btn-container">
+            <br/>
+            <a href="/admin" class="btn">Вернуться на страницу администратора</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

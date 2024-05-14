@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,76 +19,52 @@ public class AdminController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
-
-    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-//    @GetMapping("/admin/reg_edit")
-//    public String registrationOrEditPage(@RequestParam(name = "id", required = false) Integer id, Model model) {
-//
-//        if (id == null) {
-//            model.addAttribute("person", new Person());
-//            model.addAttribute("roles", roleService.getAllRoles());
-//        } else {
-//            model.addAttribute("person", peopleService.getUserByID(id));
-//            model.addAttribute("roles", roleService.getAllRoles());
-//        }
-//        return "regEdit";
-//    }
-
-    @GetMapping("/admin/edit")
-    public String editPage(@RequestParam("id") int id, Model model) {
-            model.addAttribute("person", peopleService.getUserByID(id));
-            model.addAttribute("roles", roleService.getAllRoles());
-        return "edit";
+    @GetMapping("/admin/create")
+    public String createPage(@ModelAttribute("person") Person person, Model model) {
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "create";
     }
 
-    // реализация пока только редактирование пользователя
-    @PostMapping("/admin/update")
-    public String postEdit(@ModelAttribute("person") @Valid Person person,
-                                         BindingResult bindingResult, @RequestParam("id") int id) {
+    @PostMapping("/admin/save")
+    public String postCreate(@ModelAttribute("person") @Valid Person person,
+                             BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "edit";
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "create";
         }
 
-        peopleService.updateUser(id, person);
+        peopleService.updateUser(person.getId(), person);
+        System.out.println(person);
 
         return "redirect:/admin";
     }
 
-//    @PostMapping("/admin/reg_edit")
-//    public String postRegistrationOrEdit(@ModelAttribute("person") @Valid Person person,
-//                                         @RequestParam(value = "roles", required = false) Set<Role> roles,
-//                                         BindingResult bindingResult,
-//                                         Model model) {
-//        System.out.println("personValidator");
-//        personValidator.validate(person, bindingResult);
-//
-//        if (bindingResult.hasErrors()) {
-//            model.addAttribute("roles", roleService.getAllRoles());
-//            return "regEdit";
-//        }
-//        System.out.println("bindingResult.hasErrors()");
-//        if (roles == null || roles.isEmpty()) {
-//            model.addAttribute("roleNotSelectedMessage", "Роль не выбрана! Выберите хотя бы одну роль");
-//            model.addAttribute("roles", roleService.getAllRoles());
-//            return "regEdit";
-//        }
-//        System.out.println("roles == null || roles.isEmpty()");
-//
-//        person.setPassword(passwordEncoder.encode(person.getPassword()));
-//        System.out.println(person);
-//
-//        peopleService.createNewUser(person);
-//
-//        return "redirect:/admin";
-//    }
+    @GetMapping("/admin/edit")
+    public String editPage(@RequestParam("id") int id, Model model) {
+        model.addAttribute("person", peopleService.getUserByID(id));
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "edit";
+    }
+
+    @PostMapping("/admin/update")
+    public String postEdit(@ModelAttribute("person") @Valid Person person,
+                           BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "edit";
+        }
+
+        peopleService.updateUser(person.getId(), person);
+
+        return "redirect:/admin";
+    }
 
     @GetMapping("/admin")
     public String getAllUsers(Model model) {

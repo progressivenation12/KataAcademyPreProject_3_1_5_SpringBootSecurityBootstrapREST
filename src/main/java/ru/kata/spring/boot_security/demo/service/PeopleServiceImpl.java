@@ -18,11 +18,12 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class PeopleServiceImpl implements PeopleService, UserDetailsService {
     private final PeopleRepository peopleRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PeopleServiceImpl(PeopleRepository peopleRepository) {
+    public PeopleServiceImpl(PeopleRepository peopleRepository, PasswordEncoder passwordEncoder) {
         this.peopleRepository = peopleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -36,17 +37,10 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
         return peopleRepository.findById(id);
     }
 
-//    @Override
-//    public boolean isEmailUnique(String email, int userId) {
-//        Person personWithSameEmail = peopleRepository.findByEmail(email);
-//
-//        return personWithSameEmail == null || personWithSameEmail.getId() == userId;
-//    }
-
     @Transactional
     @Override
     public void createNewUser(Person person, Set<Role> roles) {
-        person.setPassword(person.getPassword());
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
         person.setRoleSet(roles);
 
         peopleRepository.save(person);

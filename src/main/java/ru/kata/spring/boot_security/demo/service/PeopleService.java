@@ -12,8 +12,6 @@ public interface PeopleService {
 
     Person getUserByID(int id);
 
-//    boolean isEmailUnique(String email, int userId);
-
     void updateUser(int id, Person updateUser);
 
     void deleteUser(int id);

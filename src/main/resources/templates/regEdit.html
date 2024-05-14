@@ -89,25 +89,25 @@
 
         <div class="polya">
             <label for="username">Введите ваше имя пользователя: </label>
-            <input type="text" id="username" name="username" th:value="*{userName}" placeholder="Username" required autofocus>
+            <input type="text" id="username" name="username" th:field="*{userName}" placeholder="Username" required autofocus>
             <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">username Error</div>
         </div>
 
         <div class="polya">
             <label for="age">Введите свой возраст: </label>
-            <input type="number" th:value="*{age}" id="age" placeholder="Age" required>
+            <input type="number" th:field="*{age}" id="age" placeholder="Age" required>
             <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age Error</div>
         </div>
 
         <div class="polya">
             <label for="email">Введите свой e-mail: </label>
-            <input type="text" th:value="*{email}" id="email" placeholder="Email" required>
+            <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
             <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</div>
         </div>
 
         <div class="polya">
             <label for="password">Введите пароль: </label>
-            <input type="password" th:value="*{password}" id="password" placeholder="Password" required>
+            <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>
         </div>
 

@@ -10,7 +10,6 @@ import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,14 +21,14 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
         this.peopleRepository = peopleRepository;
     }
 
+    @Transactional
+    @Override
+    public void createNewUser(Person person) {
+        peopleRepository.save(person);
+    }
     @Override
     public List<Person> getUsersList() {
-        return peopleRepository.findAll();
-    }
-
-    @Override
-    public Person getUserByUsername(String userName) {
-        return peopleRepository.findByUserName(userName);
+        return peopleRepository.findAllWithRoles();
     }
 
     @Override
@@ -56,6 +55,7 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
     public void deleteUser(int id) {
         peopleRepository.deleteById(id);
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

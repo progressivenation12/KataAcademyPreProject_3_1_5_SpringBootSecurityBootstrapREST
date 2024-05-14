@@ -6,12 +6,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Person;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
-    @Query(value = "select person from Person person join fetch person.roleSet where person.userName=:username")
-    Person findByUserName(@Param("username") String userName);
+    @Query(value = "SELECT p FROM Person p JOIN FETCH p.roleSet WHERE p.userName=:username")
+    Person findByUserName(@Param("username") String username);
+
+    @Query("SELECT DISTINCT p FROM Person p LEFT JOIN FETCH p.roleSet")
+    List<Person> findAllWithRoles();
 
     Person findByEmail(String email);
 }

@@ -3,7 +3,7 @@
       lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
+    <title>Registration or Edit</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,37 +82,50 @@
 
 <body>
 <div class="container">
-    <h1 class="f-heading">Создать нового пользователя</h1>
-    <form th:method="POST" th:action="@{/auth/registration}" th:object="${person}">
+    <form th:method="POST" th:action="@{/admin/reg_edit}" th:object="${person}">
+        <input type="hidden" th:field="*{id}" th:value="*{getId()}">
+
+        <h1 class="f-heading" th:text="*{id == 0} ? 'Добавить пользователя' : 'Редактировать пользователя'"></h1>
+
         <div class="polya">
             <label for="username">Введите ваше имя пользователя: </label>
-            <input type="text" th:field="*{userName}" id="username" placeholder="Username" required autofocus>
+            <input type="text" id="username" name="username" th:value="*{userName}" placeholder="Username" required autofocus>
             <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">username Error</div>
         </div>
+
         <div class="polya">
             <label for="age">Введите свой возраст: </label>
-            <input type="number" th:field="*{age}" id="age" placeholder="Age" required>
+            <input type="number" th:value="*{age}" id="age" placeholder="Age" required>
             <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age Error</div>
         </div>
+
         <div class="polya">
             <label for="email">Введите свой e-mail: </label>
-            <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+            <input type="text" th:value="*{email}" id="email" placeholder="Email" required>
             <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</div>
         </div>
+
         <div class="polya">
             <label for="password">Введите пароль: </label>
-            <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+            <input type="password" th:value="*{password}" id="password" placeholder="Password" required>
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>
         </div>
-        <div class="btn-container">
-            <br/>
-            <input type="submit" value="Зарегистрироваться" class="btn"/>
-            <br/>
+
+        <p>
+            <label>Выберите роли:</label><br>
+        <div th:each="role : ${roles}" class="polya">
+            <label>
+                <input type="checkbox" name="roles" th:value="*{id}" th:checked="${person.roleSet.contains(role.id)}">
+            </label>
+            <label th:text="${role.roleName}"></label><br>
         </div>
-        <hr/>
+
+        <p style="color:red" th:if="${roleNotSelectedMessage}" th:text="roleNotSelectedMessage"></p>
+        <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
+
         <div class="btn-container">
             <br/>
-            <a href="/auth/login" class="btn">Войти в аккаунт</a>
+            <input type="submit" value="Зарегистрировать" class="btn"/>
             <br/>
         </div>
     </form>

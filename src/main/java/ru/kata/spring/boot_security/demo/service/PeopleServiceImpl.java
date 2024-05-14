@@ -4,28 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Person;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
 public class PeopleServiceImpl implements PeopleService, UserDetailsService {
     private final PeopleRepository peopleRepository;
 
+
     @Autowired
     public PeopleServiceImpl(PeopleRepository peopleRepository) {
         this.peopleRepository = peopleRepository;
     }
 
-    @Transactional
-    @Override
-    public void createNewUser(Person person) {
-        peopleRepository.save(person);
-    }
+
     @Override
     public List<Person> getUsersList() {
         return peopleRepository.findAllWithRoles();
@@ -33,14 +33,23 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
 
     @Override
     public Person getUserByID(int id) {
-        return peopleRepository.findById(id).orElse(null);
+        return peopleRepository.findById(id);
     }
 
-    @Override
-    public boolean isEmailUnique(String email, int userId) {
-        Person personWithSameEmail = peopleRepository.findByEmail(email);
+//    @Override
+//    public boolean isEmailUnique(String email, int userId) {
+//        Person personWithSameEmail = peopleRepository.findByEmail(email);
+//
+//        return personWithSameEmail == null || personWithSameEmail.getId() == userId;
+//    }
 
-        return personWithSameEmail == null || personWithSameEmail.getId() == userId;
+    @Transactional
+    @Override
+    public void createNewUser(Person person, Set<Role> roles) {
+        person.setPassword(person.getPassword());
+        person.setRoleSet(roles);
+
+        peopleRepository.save(person);
     }
 
     @Transactional

@@ -82,14 +82,15 @@
 
 <body>
 <div class="container">
-    <form th:method="POST" th:action="@{/admin/reg_edit}" th:object="${person}">
-        <input type="hidden" th:field="*{id}" th:value="*{getId()}">
+    <form th:method="POST" th:action="@{/admin/update(id=${person.getId()})}" th:object="${person}">
+<!--        <input type="hidden" th:field="*{id}" th:value="${person.getId()}">-->
 
         <h1 class="f-heading" th:text="*{id == 0} ? 'Добавить пользователя' : 'Редактировать пользователя'"></h1>
 
         <div class="polya">
             <label for="username">Введите ваше имя пользователя: </label>
-            <input type="text" id="username" name="username" th:field="*{userName}" placeholder="Username" required autofocus>
+            <input type="text" id="username" name="username" th:field="*{userName}" placeholder="Username" required
+                   autofocus>
             <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">username Error</div>
         </div>
 
@@ -111,21 +112,25 @@
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>
         </div>
 
-        <p>
-            <label>Выберите роли:</label><br>
-        <div th:each="role : ${roles}" class="polya">
-            <label>
-                <input type="checkbox" name="roles" th:value="*{id}" th:checked="${person.roleSet.contains(role.id)}">
-            </label>
-            <label th:text="${role.roleName}"></label><br>
+        <div class="polya">
+            <label for="roles">Выберите роли: </label>
+            <select th:field="*{roleSet}" id="roles" name="roles" multiple="multiple" >
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.getRoleName()}">Choose role</option>
+            </select>
+            <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
         </div>
+        <!--        <div th:each="role : ${roles}" class="polya">-->
+        <!--            <label>-->
+        <!--                <input type="checkbox" name="roles" th:value="*{id}" th:checked="${person.roleSet.contains(role.id)}">-->
+        <!--            </label>-->
+        <!--            <label th:text="${role.roleName}"></label><br>-->
+        <!--        </div>-->
 
-        <p style="color:red" th:if="${roleNotSelectedMessage}" th:text="roleNotSelectedMessage"></p>
-        <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
+        <!--        <p style="color:red" th:if="${roleNotSelectedMessage}" th:text="roleNotSelectedMessage"></p>-->
 
         <div class="btn-container">
             <br/>
-            <input type="submit" value="Зарегистрировать" class="btn"/>
+            <input type="submit" th:value="*{id} ? 'Сохранить изменения' : 'Добавить пользователя'" class="btn"/>
             <br/>
         </div>
     </form>

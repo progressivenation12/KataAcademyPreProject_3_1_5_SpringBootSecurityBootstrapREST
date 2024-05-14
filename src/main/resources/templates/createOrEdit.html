@@ -85,7 +85,7 @@
     <form th:method="POST" th:action="@{/admin/save}" th:object="${person}">
         <input type="hidden" th:field="*{id}" th:value="*{getId()}">
 
-        <h1 class="f-heading">Добавить пользователя</h1>
+        <h1 class="f-heading" th:text="*{id == 0} ? 'Добавить пользователя' : 'Редактировать пользователя'">Добавить пользователя</h1>
 
         <div class="polya">
             <label for="username">Введите ваше имя пользователя: </label>
@@ -122,7 +122,7 @@
 
         <div class="btn-container">
             <br/>
-            <input type="submit" value="Добавить пользователя" class="btn"/>
+            <input type="submit" th:value="*{id == 0} ? 'Добавить' : 'Сохранить'" class="btn"/>
             <br/>
         </div>
     </form>

@@ -29,15 +29,17 @@ public class AdminController {
     @GetMapping("/admin/create")
     public String createPage(@ModelAttribute("person") Person person, Model model) {
         model.addAttribute("roles", roleService.getAllRoles());
-        return "create";
+        return "createOrEdit";
     }
 
     @PostMapping("/admin/save")
     public String postCreate(@ModelAttribute("person") @Valid Person person,
                              BindingResult bindingResult, Model model) {
+//        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
-            return "create";
+            return "createOrEdit";
         }
 
         peopleService.updateUser(person.getId(), person);
@@ -50,7 +52,7 @@ public class AdminController {
     public String editPage(@RequestParam("id") int id, Model model) {
         model.addAttribute("person", peopleService.getUserByID(id));
         model.addAttribute("roles", roleService.getAllRoles());
-        return "edit";
+        return "createOrEdit";
     }
 
     @PostMapping("/admin/update")
@@ -58,7 +60,7 @@ public class AdminController {
                            BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
-            return "edit";
+            return "createOrEdit";
         }
 
         peopleService.updateUser(person.getId(), person);

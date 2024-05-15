@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.models.Person;
-import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
@@ -20,13 +19,11 @@ public class AdminController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
     private final RoleService roleService;
-    private final PeopleRepository peopleRepository;
 
-    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService, PeopleRepository peopleRepository) {
+    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.roleService = roleService;
-        this.peopleRepository = peopleRepository;
     }
 
     @GetMapping("/admin/create")
@@ -39,12 +36,8 @@ public class AdminController {
     @PostMapping("/admin/save")
     public String postCreate(@ModelAttribute("person") @Valid Person person,
                              BindingResult bindingResult, Model model) {
-        System.out.println("/admin/save " + person + roleService.getAllRoles());
 
-        if (peopleRepository.findAllWithRoles().size() != 0) {
-            personValidator.validate(person, bindingResult);
-            System.out.println("personValidator");
-        }
+        personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
@@ -61,7 +54,11 @@ public class AdminController {
 
     @GetMapping("/admin/edit")
     public String editPage(@RequestParam("id") int id, Model model) {
-        model.addAttribute("person", peopleService.getUserByID(id));
+        Person person = peopleService.getUserByID(id);
+
+        person.setOldUserName(person.getUserName());
+
+        model.addAttribute("person", person);
         model.addAttribute("roles", roleService.getAllRoles());
         return "edit";
     }
@@ -70,13 +67,15 @@ public class AdminController {
     public String postEdit(@ModelAttribute("person") @Valid Person person,
                            BindingResult bindingResult, Model model) {
 
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
             return "edit";
         }
 
         peopleService.updateUser(person.getId(), person);
-        System.out.println(person);
+
         return "redirect:/admin";
     }
 
@@ -91,4 +90,5 @@ public class AdminController {
         peopleService.deleteUser(id);
         return "redirect:/admin";
     }
+
 }

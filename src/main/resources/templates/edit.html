@@ -84,6 +84,7 @@
 <div class="container">
     <form th:method="POST" th:action="@{/admin/update}" th:object="${person}">
         <input type="hidden" th:field="*{id}" th:value="*{getId()}">
+        <input type="hidden" th:field="*{oldUserName}" th:value="*{getOldUserName()}">
 
         <h1 class="f-heading">Редактировать пользователя</h1>
 
@@ -115,10 +116,13 @@
         <div class="polya">
             <label for="roles">Выберите роли: </label>
             <select th:field="*{roleSet}" id="roles" name="roles" multiple="multiple">
-                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.getRoleName()}">Choose role</option>
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.getRoleName()}">Choose role
+                </option>
             </select>
-            <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">
-                <p th:if="${#fields.errors('roleSet') == 'Size.person.roleSet'}">Пожалуйста, выберите хотя бы одну роль.</p>
+            <br/>
+            <div style="color: red" th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">
+                <p th:if="${#fields.errors('roleSet') == 'Size.person.roleSet'}">Пожалуйста, выберите хотя бы одну
+                    роль.</p>
             </div>
         </div>
 

@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
-import java.util.Optional;
-
 @Service
 public class PeopleDetailsService implements UserDetailsService {
     private final PeopleRepository peopleRepository;
@@ -21,7 +19,7 @@ public class PeopleDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Person person = peopleRepository.findByUserName(username);
 
-        if (person != null) {
+        if (person == null) {
             throw new UsernameNotFoundException("Пользователь не найден!");
         }
 

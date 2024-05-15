@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -35,6 +36,9 @@ public class Person implements UserDetails {
     @Size(min = 2, max = 25, message = "Имя и фамилия должны содержать от 2 до 25 символов!")
     @Column(name = "user_name", unique = true)
     private String userName;
+
+    @Transient
+    private String oldUserName;
 
     @NotNull(message = "Поле не должно быть пустым!")
     @Min(value = 0, message = "Возраст не должен быть меньше 0!")
@@ -82,6 +86,14 @@ public class Person implements UserDetails {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getOldUserName() {
+        return oldUserName;
+    }
+
+    public void setOldUserName(String oldUserName) {
+        this.oldUserName = oldUserName;
     }
 
     public int getAge() {

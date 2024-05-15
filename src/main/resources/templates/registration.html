@@ -115,7 +115,8 @@
             <select th:field="*{roleSet}" id="roles" name="roles" multiple="multiple">
                 <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.getRoleName()}">Choose role</option>
             </select>
-            <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">
+            <br/>
+            <div style="color: red" th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">
                 <p th:if="${#fields.errors('roleSet') == 'Size.person.roleSet'}">Пожалуйста, выберите хотя бы одну роль.</p>
             </div>
         </div>

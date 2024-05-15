@@ -32,6 +32,11 @@ public class PeopleServiceImpl implements PeopleService {
         return peopleRepository.findById(id);
     }
 
+    @Override
+    public Person getUserByUsername(String userName){
+        return peopleRepository.findByUserName(userName);
+    }
+
     @Transactional
     @Override
     public void createNewUser(Person person) {
@@ -53,4 +58,5 @@ public class PeopleServiceImpl implements PeopleService {
     public void deleteUser(int id) {
         peopleRepository.deleteById(id);
     }
+
 }

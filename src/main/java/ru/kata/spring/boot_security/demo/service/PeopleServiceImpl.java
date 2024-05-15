@@ -1,22 +1,17 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Person;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class PeopleServiceImpl implements PeopleService, UserDetailsService {
+public class PeopleServiceImpl implements PeopleService {
     private final PeopleRepository peopleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,10 +34,9 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
 
     @Transactional
     @Override
-    public void createNewUser(Person person, Set<Role> roles) {
+    public void createNewUser(Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        person.setRoleSet(roles);
-
+        System.out.println("createNewUser" + person);
         peopleRepository.save(person);
     }
 
@@ -50,6 +44,7 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
     @Override
     public void updateUser(int id, Person personUpdate) {
         personUpdate.setId(id);
+        personUpdate.setPassword(passwordEncoder.encode(personUpdate.getPassword()));
         peopleRepository.save(personUpdate);
     }
 
@@ -57,17 +52,5 @@ public class PeopleServiceImpl implements PeopleService, UserDetailsService {
     @Override
     public void deleteUser(int id) {
         peopleRepository.deleteById(id);
-    }
-
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Person person = peopleRepository.findByUserName(username);
-
-        if(person == null) {
-            throw new UsernameNotFoundException("Пользователь не найден!");
-        }
-
-        return person;
     }
 }

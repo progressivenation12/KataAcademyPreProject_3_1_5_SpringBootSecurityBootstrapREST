@@ -51,6 +51,7 @@ public class Person implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Size(min = 1, message = "Пожалуйста, выберите хотя бы одну роль.")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "person_role",
             joinColumns = @JoinColumn(name = "person_id"),

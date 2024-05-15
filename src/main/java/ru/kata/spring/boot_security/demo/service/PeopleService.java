@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface PeopleService {
-    void createNewUser(Person person, Set<Role> roles);
+    void createNewUser(Person person);
     List<Person> getUsersList();
 
     Person getUserByID(int id);

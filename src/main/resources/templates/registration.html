@@ -83,9 +83,7 @@
 <body>
 <div class="container">
     <form th:method="POST" th:action="@{/admin/save}" th:object="${person}">
-        <input type="hidden" th:field="*{id}" th:value="*{getId()}">
-
-        <h1 class="f-heading" th:text="*{id == 0} ? 'Добавить пользователя' : 'Редактировать пользователя'">Добавить пользователя</h1>
+        <h1 class="f-heading">Добавить пользователя</h1>
 
         <div class="polya">
             <label for="username">Введите ваше имя пользователя: </label>
@@ -117,12 +115,14 @@
             <select th:field="*{roleSet}" id="roles" name="roles" multiple="multiple">
                 <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.getRoleName()}">Choose role</option>
             </select>
-            <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">Role Error</div>
+            <div th:if="${#fields.hasErrors('roleSet')}" th:errors="*{roleSet}">
+                <p th:if="${#fields.errors('roleSet') == 'Size.person.roleSet'}">Пожалуйста, выберите хотя бы одну роль.</p>
+            </div>
         </div>
 
         <div class="btn-container">
             <br/>
-            <input type="submit" th:value="*{id == 0} ? 'Добавить' : 'Сохранить'" class="btn"/>
+            <input type="submit" th:value="Добавить" class="btn"/>
             <br/>
         </div>
     </form>

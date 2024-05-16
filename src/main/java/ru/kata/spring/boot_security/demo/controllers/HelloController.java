@@ -14,8 +14,8 @@ public class HelloController {
     public String sayWelcome(ModelMap model) {
         List<String> messages = new ArrayList<>();
         messages.add("Welcome!");
-        messages.add("Practical challenge 3.1.3 Java pre-project.");
-        messages.add("Task 3.1.3. Spring Boot + Security.");
+        messages.add("Practical challenge 3.1.4 Java pre-project.");
+        messages.add("Task 3.1.4. Spring Boot + Security + Bootstrap.");
         model.addAttribute("messages", messages);
 
         return "index";

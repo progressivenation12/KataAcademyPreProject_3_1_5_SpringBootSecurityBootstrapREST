@@ -1,5 +1,8 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,41 +16,45 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class AdminController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
     private final RoleService roleService;
+    private final UserDetailsService userDetailsService;
 
-    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService) {
+    public AdminController(PeopleService peopleService, PersonValidator personValidator, RoleService roleService, UserDetailsService userDetailsService) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.roleService = roleService;
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/admin/create")
-    public String createPage(@ModelAttribute("person") Person person, Model model) {
+    public String createPage(@ModelAttribute("person") Person person, Model model, Principal principal) {
+        Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("personAdmin", personAdmin);
         model.addAttribute("roles", roleService.getAllRoles());
-        System.out.println("/admin/create " + person + roleService.getAllRoles());
         return "registration";
     }
 
     @PostMapping("/admin/save")
     public String postCreate(@ModelAttribute("person") @Valid Person person,
-                             BindingResult bindingResult, Model model) {
+                             BindingResult bindingResult, Model model, Principal principal) {
 
         personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("personAdmin", personAdmin);
             model.addAttribute("roles", roleService.getAllRoles());
             System.out.println("Error create");
             return "registration";
         }
 
         peopleService.createNewUser(person);
-
-        System.out.println("postCreate" + person);
 
         return "redirect:/admin";
     }
@@ -80,7 +87,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin")
-    public String getAllUsers(Model model) {
+    public String getAllUsers(Model model, Principal principal) {
+        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("person", person);
         model.addAttribute("people", peopleService.getUsersList());
         return "admin";
     }

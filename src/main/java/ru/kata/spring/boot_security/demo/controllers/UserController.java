@@ -19,14 +19,18 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public String showUserInfo(@AuthenticationPrincipal UserDetails userDetails, Model model, Principal principal) {
-
-        model.addAttribute("isAdmin", userDetails.getAuthorities().stream()
-                .anyMatch(admin -> admin.getAuthority().equals("ROLE_ADMIN")));
-
+    public String showUserInfo(Model model, Principal principal) {
         Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("person", person);
 
         return "user";
+    }
+
+    @GetMapping("/admin/user")
+    public String showAdminInfo(Model model, Principal principal) {
+        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("person", person);
+
+        return "user-admin";
     }
 }

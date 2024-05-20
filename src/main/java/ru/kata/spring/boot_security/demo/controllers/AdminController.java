@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +8,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.kata.spring.boot_security.demo.models.Person;
+import ru.kata.spring.boot_security.demo.models.Role;
+import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -59,38 +63,56 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/edit")
-    public String editPage(@RequestParam("id") int id, Model model) {
-        Person person = peopleService.getUserByID(id);
-
-        person.setOldUserName(person.getUserName());
-
-        model.addAttribute("person", person);
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "edit";
-    }
+//    @GetMapping("/admin/edit")
+//    public String editPage(@RequestParam("id") int id, Model model) {
+//        Person editPerson = peopleService.getUserByID(id);
+//
+//        editPerson.setOldUserName(editPerson.getUserName());
+//
+//        model.addAttribute("editPerson", editPerson);
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "edit";
+//    }
 
     @PostMapping("/admin/update")
-    public String postEdit(@ModelAttribute("person") @Valid Person person,
-                           BindingResult bindingResult, Model model) {
+    public String postEdit(@ModelAttribute("updateUser") @Valid Person updateUser,
+                           BindingResult bindingResult, Model model, Principal principal) {
 
-        personValidator.validate(person, bindingResult);
+        updateUser.setOldUserName(updateUser.getUserName());
+
+        personValidator.validate(updateUser, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roles", roleService.getAllRoles());
-            return "edit";
+            Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("currentPerson", currentPerson);
+
+            model.addAttribute("updateUser", updateUser);
+            model.addAttribute("people", peopleService.getUsersList());
+            model.addAttribute("allRoles", roleService.getAllRoles());
+            return "admin";
         }
 
-        peopleService.updateUser(person.getId(), person);
+        peopleService.updateUser(updateUser.getId(), updateUser);
 
         return "redirect:/admin";
     }
 
     @GetMapping("/admin")
     public String getAllUsers(Model model, Principal principal) {
-        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("person", person);
+        Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("currentPerson", currentPerson);
         model.addAttribute("people", peopleService.getUsersList());
+        model.addAttribute("allRoles", roleService.getAllRoles());
+
+        Map<Integer, String> personRolesMap = new HashMap<>();
+        for (Person person : peopleService.getUsersList()) {
+            String rolesString = person.getRoleSet().stream()
+                    .map(Role::getRoleName)
+                    .collect(Collectors.joining(","));
+            personRolesMap.put(person.getId(), rolesString);
+        }
+        model.addAttribute("personRolesMap", personRolesMap);
+
         return "admin";
     }
 

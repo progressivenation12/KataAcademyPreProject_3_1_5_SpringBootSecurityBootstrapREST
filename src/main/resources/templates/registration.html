@@ -200,7 +200,7 @@
                     <div class="registration-card">
                         <form th:method="POST" th:action="@{/admin/save}" th:object="${person}">
                             <div class="mb-3">
-                                <label for="username" class="custom-form-label mb-md-2">Enter your username:</label>
+                                <label for="username" class="custom-form-label mb-md-2">Enter username:</label>
                                 <input type="text" id="username" name="username" th:field="*{userName}"
                                        class="form-control" placeholder="Username" required>
                                 <div th:if="${#fields.hasErrors('userName')}" class="alert alert-danger mt-2"
@@ -209,7 +209,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="age" class="custom-form-label mb-md-2">Enter your age: </label>
+                                <label for="age" class="custom-form-label mb-md-2">Enter age: </label>
                                 <input type="number" id="age" name="age" th:field="*{age}" class="form-control"
                                        placeholder="Age" required>
                                 <div th:if="${#fields.hasErrors('age')}" class="alert alert-danger mt-2" role="alert"
@@ -218,7 +218,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="custom-form-label mb-md-2">Enter your e-mail address: </label>
+                                <label for="email" class="custom-form-label mb-md-2">Enter e-mail address: </label>
                                 <input type="text" id="email" name="email" th:field="*{email}" class="form-control"
                                        placeholder="Email" required>
                                 <div th:if="${#fields.hasErrors('email')}" class="alert alert-danger mt-2" role="alert"
@@ -227,7 +227,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="custom-form-label mb-md-2">Enter your password: </label>
+                                <label for="password" class="custom-form-label mb-md-2">Enter password: </label>
                                 <input type="password" id="password" name="password" th:field="*{password}"
                                        class="form-control" placeholder="Password" required>
                                 <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger mt-2"
@@ -237,7 +237,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="roles" class="custom-form-label mb-md-2">Choose your roles: </label>
+                                <label for="roles" class="custom-form-label mb-md-2">Choose roles: </label>
                                 <select id="roles" name="roles" th:field="*{roleSet}" class="form-select"
                                         size="2" aria-label="size 2 select example"
                                         multiple="multiple">

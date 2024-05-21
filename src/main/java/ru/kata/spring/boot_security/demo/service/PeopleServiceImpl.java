@@ -47,10 +47,10 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Transactional
     @Override
-    public void updateUser(int id, Person personUpdate) {
-        personUpdate.setId(id);
-        personUpdate.setPassword(passwordEncoder.encode(personUpdate.getPassword()));
-        peopleRepository.save(personUpdate);
+    public void updateUser(int id, Person updatePerson) {
+        updatePerson.setId(id);
+        updatePerson.setPassword(passwordEncoder.encode(updatePerson.getPassword()));
+        peopleRepository.save(updatePerson);
     }
 
     @Transactional

@@ -8,19 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import ru.kata.spring.boot_security.demo.models.Person;
-import ru.kata.spring.boot_security.demo.models.Role;
-import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -71,28 +65,25 @@ public class AdminController {
 //
 //        model.addAttribute("editPerson", editPerson);
 //        model.addAttribute("roles", roleService.getAllRoles());
-//        return "edit";
+//        return "admin";
 //    }
 
     @PostMapping("/admin/update")
-    public String postEdit(@ModelAttribute("updateUser") @Valid Person updateUser,
+    public String postEdit(@ModelAttribute("person") @Valid Person person,
                            BindingResult bindingResult, Model model, Principal principal) {
 
-        updateUser.setOldUserName(updateUser.getUserName());
-
-        personValidator.validate(updateUser, bindingResult);
+        personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("currentPerson", currentPerson);
 
-            model.addAttribute("updateUser", updateUser);
             model.addAttribute("people", peopleService.getUsersList());
             model.addAttribute("allRoles", roleService.getAllRoles());
             return "admin";
         }
 
-        peopleService.updateUser(updateUser.getId(), updateUser);
+        peopleService.updateUser(person.getId(), person);
 
         return "redirect:/admin";
     }
@@ -103,15 +94,6 @@ public class AdminController {
         model.addAttribute("currentPerson", currentPerson);
         model.addAttribute("people", peopleService.getUsersList());
         model.addAttribute("allRoles", roleService.getAllRoles());
-
-        Map<Integer, String> personRolesMap = new HashMap<>();
-        for (Person person : peopleService.getUsersList()) {
-            String rolesString = person.getRoleSet().stream()
-                    .map(Role::getRoleName)
-                    .collect(Collectors.joining(","));
-            personRolesMap.put(person.getId(), rolesString);
-        }
-        model.addAttribute("personRolesMap", personRolesMap);
 
         return "admin";
     }

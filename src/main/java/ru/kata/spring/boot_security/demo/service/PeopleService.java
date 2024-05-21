@@ -9,6 +9,6 @@ public interface PeopleService {
     List<Person> getUsersList();
     Person getUserByUsername(String userName);
     Person getUserByID(int id);
-    void updateUser(int id, Person updateUser);
+    void updateUser(int id, Person updatePerson);
     void deleteUser(int id);
 }

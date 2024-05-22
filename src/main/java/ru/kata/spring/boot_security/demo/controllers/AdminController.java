@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.models.Person;
@@ -49,7 +48,6 @@ public class AdminController {
             Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("personAdmin", personAdmin);
             model.addAttribute("roles", roleService.getAllRoles());
-            System.out.println("Error create");
             return "registration";
         }
 
@@ -58,21 +56,11 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-//    @GetMapping("/admin/edit")
-//    public String editPage(@RequestParam("id") int id, Model model) {
-//        Person editPerson = peopleService.getUserByID(id);
-//
-//        editPerson.setOldUserName(editPerson.getUserName());
-//
-//        model.addAttribute("editPerson", editPerson);
-//        model.addAttribute("roles", roleService.getAllRoles());
-//        return "admin";
-//    }
-
     @PostMapping("/admin/update")
     public String postEdit(@ModelAttribute("person") @Valid Person person,
-                           @PathVariable("id") int id,
                            BindingResult bindingResult, Model model, Principal principal) {
+
+        person.setOldUserName(person.getUserName());
 
         personValidator.validate(person, bindingResult);
 
@@ -80,12 +68,13 @@ public class AdminController {
             Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("currentPerson", currentPerson);
 
+            model.addAttribute("person", person);
             model.addAttribute("people", peopleService.getUsersList());
-            model.addAttribute("allRoles", roleService.getAllRoles());
+            model.addAttribute("roles", roleService.getAllRoles());
             return "admin";
         }
 
-        peopleService.updateUser(id, person);
+        peopleService.updateUser(person.getId(), person);
 
         return "redirect:/admin";
     }
@@ -95,7 +84,7 @@ public class AdminController {
         Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("currentPerson", currentPerson);
         model.addAttribute("people", peopleService.getUsersList());
-        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
 
         return "admin";
     }

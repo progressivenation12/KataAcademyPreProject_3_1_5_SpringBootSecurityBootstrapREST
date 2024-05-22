@@ -220,53 +220,53 @@
                 </td>
                 <td>
                     <button type="button" class="btn custom-btn-edit btn-sm" data-bs-toggle="modal"
-                            th:attr="data-bs-target='#editModal_' + ${currentUser.id}">Edit
+                            th:attr="data-bs-target='#editModal_' + ${currentUser.getId()}">Edit
                     </button>
 
                     <!-- editModal -->
-                    <div class="modal fade" th:id="'editModal_' + ${currentUser.id}" tabindex="-1"
-                         th:aria-labelledby="'editModalLabel_' + ${currentUser.id}" aria-hidden="true">
+                    <div class="modal fade" th:id="'editModal_' + ${currentUser.getId()}" tabindex="-1"
+                         th:aria-labelledby="'editModalLabel_' + ${currentUser.getId()}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title fs-4" th:id="'editModalLabel_' + ${currentUser.id}">Edit user</h4>
+                                    <h4 class="modal-title fs-4" th:id="'editModalLabel_' + ${currentUser.getId()}">Edit user</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form th:id="'editUserForm_' + ${currentUser.id}" th:action="@{/admin/update}" th:object="${currentUser}" method="POST">
+                                    <form th:id="'editUserForm_' + ${currentUser.getId()}" th:action="@{/admin/update}" th:object="${person}" th:method="POST">
                                         <div class="mb-3">
                                             <label for="id" class="custom-form-label mb-md-2">Id:</label>
                                             <fieldset disabled>
-                                                <input type="text" id="id" name="id" th:value="*{id}"
+                                                <input type="text" id="id" name="id" th:value="${currentUser.id}"
                                                        class="form-control" readonly>
                                             </fieldset>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="username" class="custom-form-label mb-md-2">Username:</label>
-                                            <input type="text" id="username" name="username" th:value="*{userName}"
+                                            <input type="text" id="username" name="username" th:value="${currentUser.userName}"
                                                    class="form-control" placeholder="Username" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="age" class="custom-form-label mb-md-2">Age: </label>
-                                            <input type="number" id="age" name="age" th:value="*{age}" class="form-control"
+                                            <input type="number" id="age" name="age" th:value="${currentUser.age}" class="form-control"
                                                    placeholder="Age" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="email" class="custom-form-label mb-md-2">Email: </label>
-                                            <input type="text" id="email" name="email" th:value="*{email}" class="form-control"
+                                            <input type="text" id="email" name="email" th:value="${currentUser.email}" class="form-control"
                                                    placeholder="Email" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="password" class="custom-form-label mb-md-2">Password: </label>
-                                            <input type="password" id="password" name="password" th:value="*{password}"
+                                            <input type="password" id="password" name="password" th:value="${currentUser.password}"
                                                    class="form-control" placeholder="Password" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="roles" class="custom-form-label mb-md-2">Roles: </label>
-                                            <select id="roles" name="roles" th:value="*{roleSet}" class="form-select"
+                                            <select id="roles" name="roles" th:value="${currentUser.roleSet}" class="form-select"
                                                     size="2" aria-label="size 2 select example"
                                                     multiple="multiple">
                                                 <option th:each="role : ${allRoles}" th:value="${role.id}"
@@ -280,7 +280,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <input type="submit" class="btn btn-primary" th:form="'editUserForm_' + ${currentUser.id}" th:value="Edit">
+                                    <input type="submit" class="btn btn-primary" th:form="'editUserForm_' + ${currentUser.getId()}" th:value="Edit">
                                 </div>
                             </div>
                         </div>

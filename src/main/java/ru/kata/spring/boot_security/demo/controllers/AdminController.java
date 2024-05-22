@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.models.Person;
@@ -70,6 +71,7 @@ public class AdminController {
 
     @PostMapping("/admin/update")
     public String postEdit(@ModelAttribute("person") @Valid Person person,
+                           @PathVariable("id") int id,
                            BindingResult bindingResult, Model model, Principal principal) {
 
         personValidator.validate(person, bindingResult);
@@ -83,7 +85,7 @@ public class AdminController {
             return "admin";
         }
 
-        peopleService.updateUser(person.getId(), person);
+        peopleService.updateUser(id, person);
 
         return "redirect:/admin";
     }

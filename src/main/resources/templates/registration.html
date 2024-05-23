@@ -28,7 +28,6 @@
             font-weight: bold;
         }
 
-
         .navbar {
             background-color: #343a40;
             z-index: 1;
@@ -200,8 +199,8 @@
                     <div class="registration-card">
                         <form th:method="POST" th:action="@{/admin/save}" th:object="${person}">
                             <div class="mb-3">
-                                <label for="username" class="custom-form-label mb-md-2">Enter username:</label>
-                                <input type="text" id="username" name="username" th:field="*{userName}"
+                                <label for="userName" class="custom-form-label mb-md-2">Enter username:</label>
+                                <input type="text" id="userName" name="userName" th:field="*{userName}"
                                        class="form-control" placeholder="Username" required>
                                 <div th:if="${#fields.hasErrors('userName')}" class="alert alert-danger mt-2"
                                      role="alert" th:errors="*{userName}">username Error

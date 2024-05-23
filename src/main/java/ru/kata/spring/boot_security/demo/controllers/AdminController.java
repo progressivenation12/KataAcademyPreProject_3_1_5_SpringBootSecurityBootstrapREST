@@ -71,6 +71,7 @@ public class AdminController {
             model.addAttribute("person", person);
             model.addAttribute("people", peopleService.getUsersList());
             model.addAttribute("roles", roleService.getAllRoles());
+            model.addAttribute("org.springframework.validation.BindingResult.person", bindingResult);
             return "admin";
         }
 
@@ -83,6 +84,7 @@ public class AdminController {
     public String getAllUsers(Model model, Principal principal) {
         Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("currentPerson", currentPerson);
+
         model.addAttribute("people", peopleService.getUsersList());
         model.addAttribute("roles", roleService.getAllRoles());
 

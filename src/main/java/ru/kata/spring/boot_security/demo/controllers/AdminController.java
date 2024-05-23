@@ -93,7 +93,6 @@ public class AdminController {
     @PostMapping("/admin/delete")
     public String deleteUser(@RequestParam("id") int id) {
         peopleService.deleteUser(id);
-        System.out.println("s");
         return "redirect:/admin";
     }
 

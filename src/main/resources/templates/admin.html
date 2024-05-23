@@ -213,7 +213,7 @@
                 <td>
                     <ul>
                         <li th:each="role, iterStat : ${currentUser.roleSet}">
-                            <span th:text="${role.roleName.replace('ROLE_', '')}">role</span>
+                            <span th:text="${role.roleName.substring(5)}">role</span>
                             <span th:if="${!iterStat.last}">, </span>
                         </li>
                     </ul>
@@ -239,8 +239,6 @@
 
                                 <form th:action="@{/admin/update}" th:object="${currentUser}" method="POST">
                                     <div class="modal-body">
-                                        <!--                                         <input type="hidden" th:field="*{id}" th:value="*{getId()}">-->
-                                        <!-- th:id="'editUserForm_' + ${currentUser.id}"                                       <input type="hidden" th:field="*{oldUserName}" th:value="*{getOldUserName()}">-->
                                         <div class="mb-3">
                                             <label for="id" class="custom-form-label mb-md-2">Id:</label>
                                             <input type="text" id="id" name="id" th:value="*{id}"
@@ -281,7 +279,7 @@
                                                     size="2" aria-label="size 2 select example"
                                                     multiple="multiple">
                                                 <option th:each="role : ${roles}" th:value="${role.id}"
-                                                        th:text="${role.getRoleName().replace('ROLE_','')}"
+                                                        th:text="${role.getRoleName().substring(5)}"
                                                         th:selected="${currentUser.roleSet.contains(role)}">
                                                     Choose role
                                                 </option>

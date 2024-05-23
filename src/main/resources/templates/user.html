@@ -134,7 +134,7 @@
                 <span class="email" th:text="${person.email}">@email</span>
                 <span class="roles">with roles: </span>
                 <span th:each="role, iterStat : ${person.roleSet}">
-                    <span th:text="${role.roleName}">ROLE</span>
+                    <span th:text="${role.roleName.substring(5)}">ROLE</span>
                     <span th:if="${!iterStat.last}">, </span>
                 </span>
             </span>
@@ -174,7 +174,7 @@
                 <td>
                     <ul>
                         <li th:each="role, iterStat : ${person.roleSet}">
-                            <span th:text="${role.roleName}">role</span>
+                            <span th:text="${role.roleName.substring(5)}">role</span>
                             <span th:if="${!iterStat.last}">, </span>
                         </li>
                     </ul>

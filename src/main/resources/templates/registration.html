@@ -162,7 +162,7 @@
                 <span class="email" th:text="${personAdmin.email}">@email</span>
                 <span class="roles">with roles: </span>
                 <span th:each="role, iterStat : ${personAdmin.roleSet}">
-                    <span th:text="${role.roleName.replace('ROLE_','')}">ROLE</span>
+                    <span th:text="${role.roleName.substring(5)}">ROLE</span>
                     <span th:if="${!iterStat.last}">, </span>
                 </span>
             </span>

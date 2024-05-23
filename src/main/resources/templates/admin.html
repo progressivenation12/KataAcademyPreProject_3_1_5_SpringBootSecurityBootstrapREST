@@ -246,15 +246,15 @@
                                             aria-label="Close"></button>
                                 </div>
 
-                                <form th:action="@{/admin/update}" method="POST">
+                                <form th:action="@{/admin/update}" th:object="${currentUser}" method="POST">
                                     <div class="custom-modal-body">
-                                        <input type="hidden" name="id" th:value="${currentUser.id}">
+                                        <input type="hidden" name="id" th:value="*{id}">
                                         <br/>
                                         <div class="mb-3">
                                             <label th:for="'id_edit_' + ${currentUser.id}"
                                                    class="custom-form-label mb-md-2">ID:</label>
                                             <input type="text" th:id="'id_edit_' + ${currentUser.id}" name="id"
-                                                   th:value="${currentUser.id}"
+                                                   th:value="*{id}"
                                                    class="form-control" disabled>
                                         </div>
 
@@ -263,7 +263,7 @@
                                                    class="custom-form-label mb-md-2">Username:</label>
                                             <input type="text" th:id="'userName_edit_' + ${currentUser.id}"
                                                    name="userName"
-                                                   th:value="${currentUser.userName}"
+                                                   th:value="*{userName}"
                                                    class="form-control" placeholder="Username" required>
                                         </div>
 
@@ -271,7 +271,7 @@
                                             <label th:for="'age_edit_' + ${currentUser.id}"
                                                    class="custom-form-label mb-md-2">Age: </label>
                                             <input type="number" th:id="'age_edit_' + ${currentUser.id}" name="age"
-                                                   th:value="${currentUser.age}"
+                                                   th:value="*{age}"
                                                    class="form-control"
                                                    placeholder="Age" required>
                                         </div>
@@ -280,7 +280,7 @@
                                             <label th:for="'email_edit_' + ${currentUser.id}"
                                                    class="custom-form-label mb-md-2">Email: </label>
                                             <input type="text" th:id="'email_edit_' + ${currentUser.id}" name="email"
-                                                   th:value="${currentUser.email}"
+                                                   th:value="*{email}"
                                                    class="form-control"
                                                    placeholder="Email" required>
                                         </div>
@@ -289,14 +289,14 @@
                                                    class="custom-form-label mb-md-2">Password: </label>
                                             <input type="password" th:id="'password_edit_' + ${currentUser.id}"
                                                    name="password"
-                                                   th:value="${currentUser.password}"
+                                                   th:value="*{password}"
                                                    class="form-control" placeholder="Password" required>
                                         </div>
                                         <div class="mb-3">
                                             <label th:for="'roles_edit_' + ${currentUser.id}"
                                                    class="custom-form-label mb-md-2">Roles: </label>
                                             <select th:id="'roles_edit_' + ${currentUser.id}" name="roleSet"
-                                                    th:value="${currentUser.roleSet}"
+                                                    th:value="*{roleSet}"
                                                     class="form-select"
                                                     size="2" aria-label="size 2 select example"
                                                     multiple="multiple">

@@ -1,13 +1,14 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -16,7 +17,8 @@ import ru.kata.spring.boot_security.demo.util.PersonValidator;
 import javax.validation.Valid;
 import java.security.Principal;
 
-@Controller
+@RestController
+@RequestMapping("/admin")
 public class AdminController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
@@ -30,7 +32,7 @@ public class AdminController {
         this.userDetailsService = userDetailsService;
     }
 
-    @GetMapping("/admin/create")
+    @GetMapping("/create")
     public String createPage(@ModelAttribute("person") Person person, Model model, Principal principal) {
         Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("personAdmin", personAdmin);
@@ -38,7 +40,7 @@ public class AdminController {
         return "registration";
     }
 
-    @PostMapping("/admin/save")
+    @PostMapping("/save")
     public String postCreate(@ModelAttribute("person") @Valid Person person,
                              BindingResult bindingResult, Model model, Principal principal) {
 
@@ -56,7 +58,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PostMapping("/admin/update")
+    @PostMapping("/update")
     public String postEdit(@ModelAttribute("person") @Valid Person person,
                            BindingResult bindingResult, Model model, Principal principal) {
 
@@ -80,7 +82,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin")
+    @GetMapping
     public String getAllUsers(Model model, Principal principal) {
         Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
         model.addAttribute("currentPerson", currentPerson);
@@ -90,10 +92,9 @@ public class AdminController {
         return "admin";
     }
 
-    @PostMapping("/admin/delete")
+    @PostMapping("/delete")
     public String deleteUser(@RequestParam("id") int id) {
         peopleService.deleteUser(id);
         return "redirect:/admin";
     }
-
 }

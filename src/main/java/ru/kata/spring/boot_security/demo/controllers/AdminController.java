@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -17,8 +17,8 @@ import ru.kata.spring.boot_security.demo.util.PersonValidator;
 import javax.validation.Valid;
 import java.security.Principal;
 
-@RestController
-@RequestMapping("/admin")
+//@Controller
+//@RequestMapping("/admin_admin")
 public class AdminController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
@@ -34,8 +34,8 @@ public class AdminController {
 
     @GetMapping("/create")
     public String createPage(@ModelAttribute("person") Person person, Model model, Principal principal) {
-        Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("personAdmin", personAdmin);
+//        Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//        model.addAttribute("personAdmin", personAdmin);
         model.addAttribute("roles", roleService.getAllRoles());
         return "registration";
     }
@@ -47,13 +47,13 @@ public class AdminController {
         personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
-            model.addAttribute("personAdmin", personAdmin);
+//            Person personAdmin = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//            model.addAttribute("personAdmin", personAdmin);
             model.addAttribute("roles", roleService.getAllRoles());
             return "registration";
         }
 
-        peopleService.createNewUser(person);
+        peopleService.addNewUser(person);
 
         return "redirect:/admin";
     }
@@ -67,11 +67,11 @@ public class AdminController {
         personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
-            model.addAttribute("currentPerson", currentPerson);
+//            Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//            model.addAttribute("currentPerson", currentPerson);
 
             model.addAttribute("person", person);
-            model.addAttribute("people", peopleService.getUsersList());
+            model.addAttribute("people", peopleService.getAllUsers());
             model.addAttribute("roles", roleService.getAllRoles());
             model.addAttribute("org.springframework.validation.BindingResult.person", bindingResult);
             return "admin";
@@ -84,9 +84,9 @@ public class AdminController {
 
     @GetMapping
     public String getAllUsers(Model model, Principal principal) {
-        Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("currentPerson", currentPerson);
-        model.addAttribute("people", peopleService.getUsersList());
+//        Person currentPerson = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//        model.addAttribute("currentPerson", currentPerson);
+        model.addAttribute("people", peopleService.getAllUsers());
         model.addAttribute("roles", roleService.getAllRoles());
 
         return "admin";

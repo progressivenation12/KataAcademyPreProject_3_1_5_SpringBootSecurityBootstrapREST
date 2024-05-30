@@ -169,12 +169,12 @@
 <nav class="navbar navbar-dark">
     <div class="container-fluid">
             <span class="navbar-text">
-                <span class="email" th:text="${currentPerson.email}">@email</span>
+<!--                <span class="email" th:text="${currentPerson.email}">@email</span>-->
                 <span class="roles">with roles: </span>
-                <span th:each="role, iterStat : ${currentPerson.roleSet}">
-                    <span th:text="${role.roleName.replace('ROLE_', '')}">ROLE</span>
-                    <span th:if="${!iterStat.last}">, </span>
-                </span>
+<!--                <span th:each="role, iterStat : ${currentPerson.roleSet}">-->
+<!--                    <span th:text="${role.roleName.replace('ROLE_', '')}">ROLE</span>-->
+<!--                    <span th:if="${!iterStat.last}">, </span>-->
+<!--                </span>-->
             </span>
         <form th:action="@{/logout}" th:method="POST" class="d-inline">
             <button type="submit" value="Logout" class="logout-btn">Logout</button>

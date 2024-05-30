@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,7 +24,7 @@ public class PeopleServiceImpl implements PeopleService {
 
 
     @Override
-    public List<Person> getUsersList() {
+    public List<Person> getAllUsers() {
         return peopleRepository.findAllWithRoles();
     }
 
@@ -39,9 +40,8 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Transactional
     @Override
-    public void createNewUser(Person person) {
+    public void addNewUser(Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        System.out.println("createNewUser" + person);
         peopleRepository.save(person);
     }
 

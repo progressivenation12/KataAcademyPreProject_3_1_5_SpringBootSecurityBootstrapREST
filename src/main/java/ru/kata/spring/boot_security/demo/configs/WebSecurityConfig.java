@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,24 +26,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Конфигурация АВТОРИЗАЦИИ
     // Конфигурация для самого Spring Security
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/login").permitAll()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/user/").hasAnyRole("USER", "ADMIN")
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login")
+//                .loginProcessingUrl("/process_login")
+//                .successHandler(successUserHandler)
+//                .and()
+//                .logout()
+//                .logoutUrl("/logout")
+//                .logoutSuccessUrl("/login")
+//                .permitAll();
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/").hasAnyRole("USER", "ADMIN")
-                .anyRequest().authenticated()
+                .authorizeRequests().anyRequest().permitAll() // Разрешить все запросы без аутентификации
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/process_login")
-                .successHandler(successUserHandler)
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .permitAll();
+                .csrf().disable() // Отключить защиту CSRF, если это необходимо
+                .formLogin().disable() // Отключить форму логина, если она используется
+                .httpBasic().disable(); // Отключить базовую HTTP-аутентификацию, если используется
     }
 
     // Настройка аутентификации

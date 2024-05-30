@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -25,12 +27,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<Role> getAllRoles() {
-        return new HashSet<>(roleRepository.findAll());
+    public List<Role> getAllRoles() {
+        return new ArrayList<>(roleRepository.findAll());
     }
 
     @Override
-    public Role getRoleById(int id) {
-        return roleRepository.findById(id).orElse(null);
+    public Role getRoleByName(String name) {
+        return roleRepository.findByRoleName(name);
     }
 }

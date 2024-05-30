@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,16 +18,16 @@ public class UserController {
 
     @GetMapping("/user")
     public String showUserInfo(Model model, Principal principal) {
-        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("person", person);
+//        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//        model.addAttribute("person", person);
 
         return "user";
     }
 
     @GetMapping("/admin/user")
     public String showAdminInfo(Model model, Principal principal) {
-        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("person", person);
+//        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
+//        model.addAttribute("person", person);
 
         return "user-admin";
     }

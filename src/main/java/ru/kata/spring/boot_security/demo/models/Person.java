@@ -33,7 +33,7 @@ public class Person implements UserDetails {
     private int id;
 
     @NotBlank(message = "Поле не должно быть пустым!")
-    @Size(min = 2, max = 25, message = "Имя и фамилия должны содержать от 2 до 25 символов!")
+    @Size(min = 2, max = 25, message = "Имя пользователя должно быть от 2 до 25 символов!")
     @Column(name = "user_name", unique = true)
     private String userName;
 

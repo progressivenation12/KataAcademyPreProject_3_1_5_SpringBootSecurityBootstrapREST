@@ -1,5 +1,8 @@
 package ru.kata.spring.boot_security.demo.dto;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -11,6 +14,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PersonDTO {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @NotBlank(message = "Поле не должно быть пустым!")
     @Size(min = 2, max = 25, message = "Имя и фамилия должны содержать от 2 до 25 символов!")
     private String userName;
@@ -32,6 +40,14 @@ public class PersonDTO {
 
     @Size(min = 1, message = "Пожалуйста, выберите хотя бы одну роль.")
     private Set<String> roleSet = new HashSet<>();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUserName() {
         return userName;
@@ -80,4 +96,5 @@ public class PersonDTO {
     public void setRoleSet(Set<String> roleSet) {
         this.roleSet = roleSet;
     }
+
 }

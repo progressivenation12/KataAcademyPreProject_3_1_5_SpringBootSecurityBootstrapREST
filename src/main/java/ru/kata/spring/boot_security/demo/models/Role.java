@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ public class Role implements GrantedAuthority {
     @Column(name = "name_role", unique = true)
     private String roleName;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roleSet")
     private Set<Person> people = new HashSet<>();
 

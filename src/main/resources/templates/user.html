@@ -131,7 +131,7 @@
 <nav class="navbar navbar-dark">
     <div class="container-fluid">
             <span class="navbar-text">
-                <span class="email" th:text="${person.email}">@email</span>
+                <span class="email" th:text="${person.email}">@email </span>
                 <span class="roles">with roles: </span>
                 <span th:each="role, iterStat : ${person.roleSet}">
                     <span th:text="${role.roleName.substring(5)}">ROLE</span>

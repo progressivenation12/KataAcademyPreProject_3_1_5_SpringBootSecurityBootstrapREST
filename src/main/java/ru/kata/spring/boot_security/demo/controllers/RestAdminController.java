@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.dto.PersonDTO;
 import ru.kata.spring.boot_security.demo.util.PersonNotFoundException;
-import ru.kata.spring.boot_security.demo.models.PeopleAndRolesResponse;
+import ru.kata.spring.boot_security.demo.models.AdminResponse;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
@@ -30,38 +31,40 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class RestAdminController {
+
+    private final ModelMapper modelMapper;
     private final PeopleService peopleService;
     private final RoleService roleService;
     private final PersonValidator personValidator;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public RestAdminController(PeopleService peopleService, RoleService roleService, PersonValidator personValidator, ModelMapper modelMapper) {
+    public RestAdminController(ModelMapper modelMapper, PeopleService peopleService, RoleService roleService, PersonValidator personValidator) {
+        this.modelMapper = modelMapper;
         this.peopleService = peopleService;
         this.roleService = roleService;
         this.personValidator = personValidator;
-        this.modelMapper = modelMapper;
     }
 
-    @GetMapping()
-    public ResponseEntity<PeopleAndRolesResponse> getAllUsers() {
-        List<PersonDTO> people = peopleService.getAllUsers().stream().map(this::converteToPersonDTO)
+    @GetMapping("/all-users")
+    public ResponseEntity<AdminResponse> getAllUsers() {
+        List<PersonDTO> people = peopleService.getAllUsers().stream()
+                .map(this::convertToPersonDTO)
                 .collect(Collectors.toList());
         List<Role> roles = roleService.getAllRoles();
 
-        PeopleAndRolesResponse peopleAndRolesResponse = new PeopleAndRolesResponse(people, roles);
+        AdminResponse adminResponse = new AdminResponse(people, roles);
 
-        return new ResponseEntity<>(peopleAndRolesResponse, HttpStatus.OK);
+        return new ResponseEntity<>(adminResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public PersonDTO getPerson(@PathVariable("id") int id) {
-        PersonDTO personDTO = converteToPersonDTO(peopleService.getUserByID(id));
+        PersonDTO personDTO = convertToPersonDTO(peopleService.getUserByID(id));
 
         if (personDTO == null) {
-            throw new PersonNotFoundException("Такого пользователя с ID: " + id + " не существует в БД!");
+            throw new PersonNotFoundException("Пользователя с ID: " + id + " не существует в БД!");
         }
 
         return personDTO;
@@ -74,7 +77,7 @@ public class RestAdminController {
             return new ResponseEntity<>("Имя пользователя уже занято!", HttpStatus.BAD_REQUEST);
         }
 
-        Person person = converteToPerson(personDTO);
+        Person person = convertToPerson(personDTO);
 
         Set<Role> roles = new HashSet<>();
 
@@ -92,39 +95,39 @@ public class RestAdminController {
 
         peopleService.addNewUser(person);
 
-        return new ResponseEntity<>("Пользователь " + person.getUserName() + " успешно добавлен.", HttpStatus.OK);
+        return new ResponseEntity<>("Пользователь " + person.getUserName() + " успешно добавлен.", HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateUser(@RequestBody Person person, BindingResult bindingResult) {
-        person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
-        personValidator.validate(person, bindingResult);
+    @PutMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestBody PersonDTO personDTO, BindingResult bindingResult) {
+        personDTO.setOldUserName(peopleService.getUserByID(personDTO.getId()).getUserName());
+        personValidator.validate(personDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        Set<Role> roles = new HashSet<>();
+        Set<String> roles = new HashSet<>();
 
-        for (Role role : person.getRoleSet()) {
-            Role roleFromDb = roleService.getRoleByName(role.getRoleName());
+        for (String role : personDTO.getRoleSet()) {
+            Role roleFromDb = roleService.getRoleByName(role);
             if (roleFromDb == null) {
-                return new ResponseEntity<>("Роль не найдена: " + role.getRoleName(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Роль не найдена: " + role, HttpStatus.BAD_REQUEST);
             }
-            roles.add(roleFromDb);
+            roles.add(String.valueOf(roleFromDb));
         }
-        person.setRoleSet(roles);
+        personDTO.setRoleSet(roles);
 
-        peopleService.updateUser(person.getId(), person);
+        peopleService.updateUser(personDTO.getId(), convertToPerson(personDTO));
 
-        return new ResponseEntity<>("Данные пользователя " + person.getUserName() + " успешно обновлены.", HttpStatus.OK);
+        return new ResponseEntity<>("Данные пользователя " + personDTO.getUserName() + " успешно обновлены.", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") int id) {
 
         if (peopleService.getUserByID(id) == null) {
-            throw new PersonNotFoundException("Такого пользователя с ID: " + id + " не существует в БД!");
+            throw new PersonNotFoundException("Пользователя с ID: " + id + " не существует в БД!");
         }
 
         String userName = peopleService.getUserByID(id).getUserName();
@@ -133,10 +136,10 @@ public class RestAdminController {
         return new ResponseEntity<>("Пользователь " + userName + " успешно удалён.", HttpStatus.OK);
     }
 
-    private Person converteToPerson(PersonDTO personDTO) {
+    private Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
-    private PersonDTO converteToPersonDTO(Person person) {
+    private PersonDTO convertToPersonDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }
 }

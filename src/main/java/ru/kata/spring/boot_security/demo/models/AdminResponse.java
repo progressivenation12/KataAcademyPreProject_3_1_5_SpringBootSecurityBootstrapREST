@@ -4,11 +4,11 @@ import ru.kata.spring.boot_security.demo.dto.PersonDTO;
 
 import java.util.List;
 
-public class PeopleAndRolesResponse {
+public class AdminResponse {
     private List<PersonDTO> people;
     private List<Role> roles;
 
-    public PeopleAndRolesResponse(List<PersonDTO> people, List<Role> roles) {
+    public AdminResponse(List<PersonDTO> people, List<Role> roles) {
         this.people = people;
         this.roles = roles;
     }

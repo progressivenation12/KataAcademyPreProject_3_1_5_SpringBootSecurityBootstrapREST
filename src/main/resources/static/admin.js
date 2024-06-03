@@ -103,7 +103,7 @@ async function loadAllUsers() {
         users.forEach(user => {
             document.getElementById(`editForm_${user.id}`).addEventListener('submit', function(event) {
                 event.preventDefault();
-                updateUser(user.id);
+                editUser(user.id);
             });
         });
     } catch (error) {
@@ -111,7 +111,7 @@ async function loadAllUsers() {
     }
 }
 
-async function updateUser(userId) {
+async function editUser(userId) {
     const form = document.getElementById(`editForm_${userId}`);
     const formData = new FormData(form);
     const user = {};

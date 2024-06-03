@@ -1,8 +1,8 @@
 $(function () {
-    getCurrentUser();
+    getAboutCurrentUser();
     setupSidebar();
 })
-function getCurrentUser() {
+function getAboutCurrentUser() {
 
     fetch("/api/user/info").then(res => res.json())
         .then(data => {

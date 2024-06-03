@@ -128,7 +128,7 @@ async function editUser(userId) {
     console.log(user);
 
     try {
-        const response = await fetch("/api/admin/update", {
+        const response = await fetch("/api/admin", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

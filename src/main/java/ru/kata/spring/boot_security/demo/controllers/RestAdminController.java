@@ -98,7 +98,7 @@ public class RestAdminController {
         return new ResponseEntity<>("Пользователь " + person.getUserName() + " успешно добавлен.", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<String> updateUser(@RequestBody PersonDTO personDTO, BindingResult bindingResult) {
         personDTO.setOldUserName(peopleService.getUserByID(personDTO.getId()).getUserName());
         personValidator.validate(personDTO, bindingResult);

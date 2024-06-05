@@ -162,6 +162,7 @@ public class Person implements UserDetails {
         return "Person{" +
                "id=" + id +
                ", userName='" + userName + '\'' +
+               ", oldUserName='" + oldUserName + '\'' +
                ", age=" + age +
                ", email='" + email + '\'' +
                ", password='" + password + '\'' +

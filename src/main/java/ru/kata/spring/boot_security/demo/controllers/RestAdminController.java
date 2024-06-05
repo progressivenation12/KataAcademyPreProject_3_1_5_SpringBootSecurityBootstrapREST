@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +27,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -38,39 +42,56 @@ public class RestAdminController {
     private final PeopleService peopleService;
     private final RoleService roleService;
     private final PersonValidator personValidator;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
-    public RestAdminController(ModelMapper modelMapper, PeopleService peopleService, RoleService roleService, PersonValidator personValidator) {
+    public RestAdminController(ModelMapper modelMapper, PeopleService peopleService, RoleService roleService, PersonValidator personValidator, UserDetailsService userDetailsService) {
         this.modelMapper = modelMapper;
         this.peopleService = peopleService;
         this.roleService = roleService;
         this.personValidator = personValidator;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @GetMapping("/accountInfo")
+    public ResponseEntity<PersonDTO> showUserInfo(Principal principal) {
+        Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
+        PersonDTO currentUserDTO = convertToPersonDTO(person);
+
+        return new ResponseEntity<>(currentUserDTO, HttpStatus.OK);
     }
 
     @GetMapping("/all-users")
-    public ResponseEntity<AdminResponse> getAllUsers() {
-        List<PersonDTO> people = peopleService.getAllUsers().stream()
+    public ResponseEntity<List<PersonDTO>> getAllUsers() {
+        List<PersonDTO> peopleDTO = peopleService.getAllUsers().stream()
                 .map(this::convertToPersonDTO)
                 .collect(Collectors.toList());
-        List<Role> roles = roleService.getAllRoles();
-
-        AdminResponse adminResponse = new AdminResponse(people, roles);
-
-        return new ResponseEntity<>(adminResponse, HttpStatus.OK);
+        return new ResponseEntity<>(peopleDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public PersonDTO getPerson(@PathVariable("id") int id) {
-        PersonDTO personDTO = convertToPersonDTO(peopleService.getUserByID(id));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable("userId") int userId) {
+        PersonDTO personDTO = convertToPersonDTO(peopleService.getUserByID(userId));
 
         if (personDTO == null) {
-            throw new PersonNotFoundException("Пользователя с ID: " + id + " не существует в БД!");
+            throw new PersonNotFoundException("Пользователя с ID: " + userId + " не существует в БД!");
         }
 
-        return personDTO;
+        return ResponseEntity.ok(personDTO);
     }
 
-    @PostMapping
+    @GetMapping("/roles")
+    public ResponseEntity<Set<Role>> getAllRoles() {
+        Set<Role> roles = roleService.getAllRoles();
+        return new ResponseEntity<>(roles, HttpStatus.OK);
+    }
+
+    @GetMapping("/roles/{id}")
+    public ResponseEntity<Set<Role>> getRole(@PathVariable("id") int id) {
+        return new ResponseEntity<>(peopleService.getUserByID(id).getRoleSet(), HttpStatus.OK);
+    }
+
+    @PostMapping("/new-user")
     public ResponseEntity<String> addNewUser(@RequestBody @Valid PersonDTO personDTO) {
 
         if (peopleService.getUserByUsername(personDTO.getUserName()) != null) {
@@ -98,29 +119,21 @@ public class RestAdminController {
         return new ResponseEntity<>("Пользователь " + person.getUserName() + " успешно добавлен.", HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateUser(@RequestBody PersonDTO personDTO, BindingResult bindingResult) {
-        personDTO.setOldUserName(peopleService.getUserByID(personDTO.getId()).getUserName());
-        personValidator.validate(personDTO, bindingResult);
+    @PutMapping("/update-user")
+    public ResponseEntity<Person> updateUser(@RequestBody @Valid Person person, BindingResult bindingResult) {
+        person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
 
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
-        }
+        System.out.println("Received data: " + person);
 
-        Set<String> roles = new HashSet<>();
+        personValidator.validate(person, bindingResult);
 
-        for (String role : personDTO.getRoleSet()) {
-            Role roleFromDb = roleService.getRoleByName(role);
-            if (roleFromDb == null) {
-                return new ResponseEntity<>("Роль не найдена: " + role, HttpStatus.BAD_REQUEST);
-            }
-            roles.add(String.valueOf(roleFromDb));
-        }
-        personDTO.setRoleSet(roles);
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+//        }
 
-        peopleService.updateUser(personDTO.getId(), convertToPerson(personDTO));
+        peopleService.updateUser(person.getId(), person);
 
-        return new ResponseEntity<>("Данные пользователя " + personDTO.getUserName() + " успешно обновлены.", HttpStatus.OK);
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

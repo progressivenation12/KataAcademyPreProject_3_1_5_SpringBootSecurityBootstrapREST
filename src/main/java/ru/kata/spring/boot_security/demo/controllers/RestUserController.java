@@ -23,7 +23,7 @@ public class RestUserController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/info")
+    @GetMapping("/accountInfo")
     public ResponseEntity<PersonDTO> showUserInfo(Principal principal) {
         Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
         PersonDTO currentUserDTO = converteToPersonDTO(person);

@@ -97,4 +97,16 @@ public class PersonDTO {
         this.roleSet = roleSet;
     }
 
+    @Override
+    public String toString() {
+        return "PersonDTO{" +
+               "id=" + id +
+               ", userName='" + userName + '\'' +
+               ", oldUserName='" + oldUserName + '\'' +
+               ", age=" + age +
+               ", email='" + email + '\'' +
+               ", password='" + password + '\'' +
+               ", roleSet=" + roleSet +
+               '}';
+    }
 }

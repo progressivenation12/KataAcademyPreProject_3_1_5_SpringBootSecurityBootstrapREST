@@ -5,6 +5,15 @@ function loadRolesForEdit(selectedRoles = []) {
     fetch("/api/admin/roles")
         .then(res => res.json())
         .then(data => {
+            data.sort((a, b) => {
+                if (a.roleName.includes('ADMIN') && b.roleName.includes('USER')) {
+                    return -1;
+                }
+                if (a.roleName.includes('USER') && b.roleName.includes('ADMIN')) {
+                    return 1;
+                }
+                return 0;
+            });
             data.forEach(role => {
                 let option = document.createElement("option");
                 option.value = role.id;
@@ -27,12 +36,7 @@ const URLEdit = "/api/admin/update-user";
 
 async function editModal(id) {
     const modalEdit = new bootstrap.Modal(document.querySelector('#editModal'));
-    await fillModalFields(formEdit, modalEdit, id);
-
-    // Получаем пользователя для заполнения формы и выбранных ролей
-    // let user = await getUserById(id);
-    // await fillModalFields(formEdit, modalEdit, id)
-    // loadRolesForEdit(user.roleSet); // Передаем выбранные роли
+    await fillModalFields(formEdit, modalEdit, id, "edit");
 }
 
 function editUser() {
@@ -50,7 +54,7 @@ function editUser() {
 
         let userData = {
             id: formEdit.querySelector("#edit-id").value,
-            userName: formEdit.querySelector("#edit-username").value,
+            userName: formEdit.querySelector("#edit-userName").value,
             age: formEdit.querySelector("#edit-age").value,
             email: formEdit.querySelector("#edit-email").value,
             password: formEdit.querySelector("#edit-password").value,
@@ -69,7 +73,8 @@ function editUser() {
                     throw new Error(`Error ${response.status}: ${errorData.message}`);
                 });
             }
-            document.getElementById('editClose').click();
+            const modalEdit = bootstrap.Modal.getInstance(document.querySelector('#editModal'));
+            modalEdit.hide();
             getAllUsers();
         }).catch(error => {
             console.error('Error:', error);

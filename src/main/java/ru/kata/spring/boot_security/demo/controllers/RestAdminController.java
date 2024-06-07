@@ -92,43 +92,25 @@ public class RestAdminController {
     }
 
     @PostMapping("/new-user")
-    public ResponseEntity<String> addNewUser(@RequestBody @Valid PersonDTO personDTO) {
+    public ResponseEntity<Person> addNewUser(@RequestBody @Valid Person newPerson, BindingResult bindingResult) {
+        personValidator.validate(newPerson, bindingResult);
 
-        if (peopleService.getUserByUsername(personDTO.getUserName()) != null) {
-            return new ResponseEntity<>("Имя пользователя уже занято!", HttpStatus.BAD_REQUEST);
-        }
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+//        }
 
-        Person person = convertToPerson(personDTO);
-
-        Set<Role> roles = new HashSet<>();
-
-        for (String roleName : personDTO.getRoleSet()) {
-            Role role = roleService.getRoleByName(roleName);
-
-            if (role == null) {
-                return new ResponseEntity<>("Роль не найдена!", HttpStatus.BAD_REQUEST);
-            }
-
-            roles.add(role);
-        }
-
-        person.setRoleSet(roles);
-
-        peopleService.addNewUser(person);
-
-        return new ResponseEntity<>("Пользователь " + person.getUserName() + " успешно добавлен.", HttpStatus.CREATED);
+        peopleService.addNewUser(newPerson);
+        return new ResponseEntity<>(newPerson, HttpStatus.CREATED);
     }
 
     @PutMapping("/update-user")
     public ResponseEntity<Person> updateUser(@RequestBody @Valid Person person, BindingResult bindingResult) {
         person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
-
-        System.out.println("Received data: " + person);
-
         personValidator.validate(person, bindingResult);
 
 //        if (bindingResult.hasErrors()) {
 //            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+//        $2a$10$7snM0PhsnU.wQk0p6Ds/wOzKHGV87aCBSC.hYupmTw5spMkzVZtE6
 //        }
 
         peopleService.updateUser(person.getId(), person);
@@ -137,16 +119,9 @@ public class RestAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") int id) {
-
-        if (peopleService.getUserByID(id) == null) {
-            throw new PersonNotFoundException("Пользователя с ID: " + id + " не существует в БД!");
-        }
-
-        String userName = peopleService.getUserByID(id).getUserName();
-
+    public ResponseEntity<Person> deleteUser(@PathVariable("id") int id) {
         peopleService.deleteUser(id);
-        return new ResponseEntity<>("Пользователь " + userName + " успешно удалён.", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Person convertToPerson(PersonDTO personDTO) {

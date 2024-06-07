@@ -1,4 +1,4 @@
-const URLNavbarAdmin = "http://localhost:8080/api/admin/accountInfo";
+const URLNavbarAdmin = "/api/admin/accountInfo";
 const navbarBrandAdmin = document.getElementById('navbarBrandAdmin');
 const tableUserAdmin = document.getElementById('tableAdmin');
 
@@ -12,8 +12,7 @@ function getCurrentAdmin() {
 
             data += `<tr>
             <td>${userAdmin.id}</td>
-            <td>${userAdmin.username}</td>
-            <td>${userAdmin.surname}</td>
+            <td>${userAdmin.userName}</td>
             <td>${userAdmin.age}</td>
             <td>${userAdmin.email}</td>
             <td>${rolesStringAdmin}</td>

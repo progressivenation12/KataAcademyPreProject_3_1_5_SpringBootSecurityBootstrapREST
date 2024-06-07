@@ -1,11 +1,10 @@
-const URLTableUsers = "http://localhost:8080/api/admin/all-users/";
+const URLTableUsers = "/api/admin/all-users";
 
 getAllUsers();
 
 function getAllUsers() {
     fetch(URLTableUsers)
-        .then(function (response) {
-            return response.json();
+        .then(function (response) { return response.json();
         })
         .then(function (users) {
             let dataOfUsers = '';

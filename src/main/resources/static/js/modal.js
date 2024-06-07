@@ -5,16 +5,28 @@ function getUserById(id) {
         });
 }
 
-function fillModalFields(form, modal, id) {
+function fillModalFields(form, modal, id, type) {
     getUserById(id).then(user => {
-        form.querySelector("#edit-id").value = user.id; // Видимое поле, отключенное
-        form.querySelector("#hidden-id").value = user.id; // Скрытое поле
-        form.querySelector("#edit-username").value = user.userName;
-        form.querySelector("#edit-age").value = user.age;
-        form.querySelector("#edit-email").value = user.email;
-        form.querySelector("#edit-password").value = user.password;
+        if (type === "edit") {
+            form.querySelector("#edit-id").value = user.id;
+            form.querySelector("#hidden-id").value = user.id;
+            form.querySelector("#edit-userName").value = user.userName;
+            form.querySelector("#edit-age").value = user.age;
+            form.querySelector("#edit-email").value = user.email;
+            form.querySelector("#edit-password").value = user.password;
 
-        loadRolesForEdit(user.roleSet);// Передаем выбранные роли
+            // Загружаем роли только для редактирования
+            loadRolesForEdit(user.roleSet);
+        } else if (type === "delete") {
+            form.querySelector("#delete-id").value = user.id;
+            form.querySelector("#delete-userName").value = user.userName;
+            form.querySelector("#delete-age").value = user.age;
+            form.querySelector("#delete-email").value = user.email;
+            form.querySelector("#delete-password").value = user.password;
+
+            // Не нужно загружать роли для удаления
+        }
+
         modal.show();
     });
 }

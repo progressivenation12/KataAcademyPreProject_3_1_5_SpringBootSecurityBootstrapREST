@@ -108,12 +108,14 @@ public class RestAdminController {
         person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
         personValidator.validate(person, bindingResult);
 
+        System.out.println(person);
 //        if (bindingResult.hasErrors()) {
 //            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
-//        $2a$10$7snM0PhsnU.wQk0p6Ds/wOzKHGV87aCBSC.hYupmTw5spMkzVZtE6
 //        }
 
         peopleService.updateUser(person.getId(), person);
+
+        System.out.println(person);
 
         return new ResponseEntity<>(person, HttpStatus.OK);
     }

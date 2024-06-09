@@ -24,7 +24,6 @@ function createNewUser() {
     formNew.addEventListener("submit", ev => {
         ev.preventDefault();
 
-        //приводим роли к виду java для отправки в БД
         let rolesForNewUser = [];
         for (let i = 0; i < formNew.roleSet.options.length; i++) {
             if (formNew.roleSet.options[i].selected) rolesForNewUser.push({
@@ -49,8 +48,9 @@ function createNewUser() {
             body: JSON.stringify(userData)
         }).then(() => {
             formNew.reset();
+
             getAllUsers();
-            $('#usersTable').click(); //клик по кнопке Users Table
+            $('#nav-users-tab').click();
 
         });
     });

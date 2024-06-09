@@ -43,7 +43,8 @@ function deleteUser() {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            $('#deleteClose').click();
+            const modalEdit = bootstrap.Modal.getInstance(document.querySelector('#deleteModal'));
+            modalEdit.hide();
             getAllUsers();
         });
     });

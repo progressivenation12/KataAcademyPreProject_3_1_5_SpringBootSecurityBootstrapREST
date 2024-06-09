@@ -48,8 +48,22 @@ public class PeopleServiceImpl implements PeopleService {
     @Transactional
     @Override
     public void updateUser(int id, Person updatePerson) {
+        Optional<Person> existingPersonOptional = Optional.ofNullable(peopleRepository.findById(id));
+
+        if (existingPersonOptional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        Person existingPerson = existingPersonOptional.get();
+
         updatePerson.setId(id);
-        updatePerson.setPassword(passwordEncoder.encode(updatePerson.getPassword()));
+
+        if (updatePerson.getPassword() != null && !updatePerson.getPassword().isEmpty()) {
+            updatePerson.setPassword(passwordEncoder.encode(updatePerson.getPassword()));
+        } else {
+            updatePerson.setPassword(existingPerson.getPassword());
+        }
+
         peopleRepository.save(updatePerson);
     }
 

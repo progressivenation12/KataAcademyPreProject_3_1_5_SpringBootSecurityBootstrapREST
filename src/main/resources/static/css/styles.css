@@ -117,13 +117,37 @@ body {
 .custom-btn-delete {
     color: #ffffff;
     background-color: #ff6969;
-border-color: #ff6969;
+    border-color: #ff6969;
 }
 
 .custom-btn-delete:hover {
     color: #ffffff;
     background-color: #e55e5e;
     border-color: #e55e5e;
+}
+
+.custom-btn-addNewUser {
+    width: 150px;
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.custom-btn-addNewUser:hover {
+    color: #fff;
+    background-color: #1491a5;
+    border-color: #1491a5;
+}
+
+.registration-card {
+    width: 100%;
+    max-width: 340px;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
 }
 
 .custom-modal-body {

@@ -69,17 +69,38 @@ function editUser() {
             body: JSON.stringify(userData)
         }).then(response => {
             if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(`Error ${response.status}: ${errorData.message}`);
+                return response.json().then(errors => {
+                    showValidationErrors(errors, "edit");
+                    throw new Error("Validation failed");
                 });
             }
             const modalEdit = bootstrap.Modal.getInstance(document.querySelector('#editModal'));
             modalEdit.hide();
+
+            clearValidationErrors("edit");
+
             getAllUsers();
         }).catch(error => {
             console.error('Error:', error);
         });
     });
 }
+
+// Находим модальное окно
+let closeButton = document.getElementById('button-edit-modal');
+
+// Добавляем обработчик события click
+closeButton.addEventListener('click', function () {
+    // Удаление класса "is-invalid" у всех элементов
+    let invalidElements = document.querySelectorAll(".is-invalid");
+    invalidElements.forEach(function(element) {
+        element.classList.remove("is-invalid");
+    });
+    // Очистка текста ошибки
+    let errorElements = document.querySelectorAll(".error-message");
+    errorElements.forEach(function(element) {
+        element.innerText = "";
+    });
+});
 
 window.addEventListener("load", loadRolesForEdit);

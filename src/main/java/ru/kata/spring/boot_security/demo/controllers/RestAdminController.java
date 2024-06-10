@@ -2,12 +2,14 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,8 +30,10 @@ import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,7 +81,7 @@ public class RestAdminController {
             throw new PersonNotFoundException("Пользователя с ID: " + userId + " не существует в БД!");
         }
 
-        return ResponseEntity.ok(personDTO);
+        return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
 
     @GetMapping("/roles")
@@ -92,30 +96,35 @@ public class RestAdminController {
     }
 
     @PostMapping("/new-user")
-    public ResponseEntity<Person> addNewUser(@RequestBody @Valid Person newPerson, BindingResult bindingResult) {
+    public ResponseEntity<?> addNewUser(@RequestBody @Valid Person newPerson, BindingResult bindingResult) {
         personValidator.validate(newPerson, bindingResult);
 
-//        if (bindingResult.hasErrors()) {
-//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
-//        }
-
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
         peopleService.addNewUser(newPerson);
         return new ResponseEntity<>(newPerson, HttpStatus.CREATED);
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<Person> updateUser(@RequestBody @Valid Person person, BindingResult bindingResult) {
+    public ResponseEntity<?> updateUser(@RequestBody @Valid Person person, BindingResult bindingResult) {
         person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
         personValidator.validate(person, bindingResult);
 
-        System.out.println(person);
-//        if (bindingResult.hasErrors()) {
-//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError("userName")).getDefaultMessage(), HttpStatus.BAD_REQUEST);
-//        }
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            System.out.println(errors);
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
 
         peopleService.updateUser(person.getId(), person);
-
-        System.out.println(person);
 
         return new ResponseEntity<>(person, HttpStatus.OK);
     }

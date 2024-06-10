@@ -46,12 +46,21 @@ function createNewUser() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(userData)
-        }).then(() => {
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(errors => {
+                    showValidationErrors(errors, "create");
+                    throw new Error("Validation failed");
+                });
+            }
             formNew.reset();
+
+            clearValidationErrors("create");
 
             getAllUsers();
             $('#nav-users-tab').click();
-
+        }).catch(error => {
+            console.error("Error:", error);
         });
     });
 }

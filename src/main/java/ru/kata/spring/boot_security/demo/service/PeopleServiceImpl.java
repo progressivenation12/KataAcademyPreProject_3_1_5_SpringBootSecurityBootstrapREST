@@ -58,7 +58,7 @@ public class PeopleServiceImpl implements PeopleService {
 
         updatePerson.setId(id);
 
-        if (updatePerson.getPassword() != null && !updatePerson.getPassword().isEmpty()) {
+        if (updatePerson.getPassword() != null && !updatePerson.getPassword().isEmpty() && !updatePerson.getPassword().equals(existingPerson.getPassword())) {
             updatePerson.setPassword(passwordEncoder.encode(updatePerson.getPassword()));
         } else {
             updatePerson.setPassword(existingPerson.getPassword());

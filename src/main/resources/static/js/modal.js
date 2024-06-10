@@ -13,7 +13,7 @@ function fillModalFields(form, modal, id, type) {
             form.querySelector("#edit-userName").value = user.userName;
             form.querySelector("#edit-age").value = user.age;
             form.querySelector("#edit-email").value = user.email;
-            // form.querySelector("#edit-password").value = user.password;
+            form.querySelector("#edit-password").value = user.password;
 
             // Загружаем роли только для редактирования
             loadRolesForEdit(user.roleSet);

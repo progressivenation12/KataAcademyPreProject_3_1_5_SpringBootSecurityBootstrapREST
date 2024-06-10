@@ -109,6 +109,7 @@
                                                        id="edit-userName"
                                                        name="userName"
                                                        placeholder="Username"/>
+                                                <div id="edit-userName-error" class="invalid-feedback"></div>
                                             </div>
 
                                             <div class="mb-3">
@@ -119,6 +120,7 @@
                                                        id="edit-email"
                                                        name="email"
                                                        placeholder="Email"/>
+                                                <div id="edit-email-error" class="invalid-feedback"></div>
                                             </div>
 
                                             <div class="mb-3">
@@ -129,17 +131,19 @@
                                                        name="age"
                                                        id="edit-age"
                                                        placeholder="Age"/>
+                                                <div id="edit-age-error" class="invalid-feedback"></div>
                                             </div>
 
-                                            <div class="mb-3">
-                                                <label for="edit-password"
-                                                       class="custom-form-label mb-md-2"><b>Password</b></label>
-                                                <input class="form-control"
-                                                       type="password"
-                                                       id="edit-password"
-                                                       name="password"
-                                                       placeholder="Password"/>
-                                            </div>
+<div class="mb-3">
+    <label for="edit-password"
+           class="custom-form-label mb-md-2"><b>Password</b></label>
+    <input class="form-control"
+           type="password"
+           id="edit-password"
+           name="password"
+           placeholder="*****"/>
+    <div id="edit-password-error" class="invalid-feedback"></div>
+</div>
 
                                             <div class="mb-3">
                                                 <label for="edit-roleSet"
@@ -148,11 +152,12 @@
                                                         class="form-control"
                                                         id="edit-roleSet" name="roleSet" required>
                                                 </select>
+                                                <div id="edit-roleSet-error" class="invalid-feedback"></div>
                                             </div>
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="button-edit-modal">
                                                 Close
                                             </button>
                                             <button type="submit" class="btn btn-primary">Edit</button>
@@ -221,6 +226,7 @@
                                                        type="password"
                                                        id="delete-password"
                                                        name="password"
+                                                       placeholder="*****"
                                                        disabled/>
                                             </div>
 
@@ -259,7 +265,7 @@
                                 <tr>
                                     <td>
                                         <div class="registration-card">
-                                            <form id="formNew">
+                                            <form id="formNew" novalidate>
 
                                                 <div class="mb-3">
                                                     <label for="create-userName"
@@ -270,6 +276,7 @@
                                                            placeholder="Username"
                                                            name="userName"
                                                            required>
+                                                    <div id="create-userName-error" class="invalid-feedback"></div>
                                                 </div>
 
                                                 <div class="mb-3">
@@ -281,6 +288,7 @@
                                                            placeholder="Age"
                                                            name="age"
                                                            required>
+                                                    <div id="create-age-error" class="invalid-feedback"></div>
                                                 </div>
 
                                                 <div class="mb-3">
@@ -292,6 +300,7 @@
                                                            placeholder="email"
                                                            name="email"
                                                            required>
+                                                    <div id="create-email-error" class="invalid-feedback"></div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="create-password"
@@ -300,20 +309,26 @@
                                                     <input type="text" class="form-control"
                                                            id="create-password"
                                                            name="password"
-                                                           placeholder="Password" required>
+                                                           placeholder="Password"
+                                                           required>
+                                                    <div id="create-password-error" class="invalid-feedback"></div>
                                                 </div>
-                                                <span><b>Role</b></span>
-                                                <select multiple size="2"
-                                                        class="form-select"
-                                                        aria-label="Default select example"
-                                                        id="create-roleSet"
-                                                        name="roleSet"
-                                                        required>
-
-                                                </select>
-                                                <br>
+                                                <div class="mb-3">
+                                                    <label for="create-roleSet"
+                                                           class="form-label fw-normal"><b>Role</b>
+                                                    </label>
+                                                    <select multiple size="2"
+                                                            class="form-select"
+                                                            aria-label="Default select example"
+                                                            id="create-roleSet"
+                                                            name="roleSet"
+                                                            required>
+                                                    </select>
+                                                    <div id="create-roleSet-error" class="invalid-feedback"></div>
+                                                </div>
                                                 <div class="d-grid gap-2">
-                                                    <input class="btn custom-btn-addNewUser" type="submit" value="Add new user"/>
+                                                    <input class="btn custom-btn-addNewUser" type="submit"
+                                                           id="submit-button" value="Add new user"/>
                                                 </div>
                                             </form>
                                         </div>

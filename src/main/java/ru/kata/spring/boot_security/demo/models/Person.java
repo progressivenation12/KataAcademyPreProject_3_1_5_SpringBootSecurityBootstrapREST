@@ -44,7 +44,7 @@ public class Person implements UserDetails {
     @Min(value = 0, message = "Возраст не должен быть меньше 0!")
     @Max(value = 150, message = "Возраст не должен превышать 155 лет!")
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @NotBlank(message = "Поле не должно быть пустым!")
     @Email(message = "Электронная почта должна быть действительной!")
@@ -100,7 +100,7 @@ public class Person implements UserDetails {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

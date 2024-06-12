@@ -26,6 +26,7 @@ function loadRolesForNewUser() {
 }
 
 let formNew = document.forms["formNew"];
+
 createNewUser();
 
 const URLNewUser = "api/admin/new-user/";
@@ -74,5 +75,22 @@ function createNewUser() {
         });
     });
 }
+
+// Находим модальное окно
+let AddNewUserButton = document.getElementById('submit-addNewUser-button');
+
+// Добавляем обработчик события click
+AddNewUserButton.addEventListener('click', function () {
+    // Удаление класса "is-invalid" у всех элементов
+    let invalidElements = document.querySelectorAll(".is-invalid");
+    invalidElements.forEach(function (element) {
+        element.classList.remove("is-invalid");
+    });
+    // Очистка текста ошибки
+    let errorElements = document.querySelectorAll(".error-message");
+    errorElements.forEach(function (element) {
+        element.innerText = "";
+    });
+});
 
 window.addEventListener("load", loadRolesForNewUser);

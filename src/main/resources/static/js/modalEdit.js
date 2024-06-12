@@ -94,9 +94,23 @@ function editUser() {
 
 // Находим модальное окно
 let closeButton = document.getElementById('button-close-edit-modal');
+let editButton = document.getElementById('submit-edit-button');
 
 // Добавляем обработчик события click
 closeButton.addEventListener('click', function () {
+    // Удаление класса "is-invalid" у всех элементов
+    let invalidElements = document.querySelectorAll(".is-invalid");
+    invalidElements.forEach(function (element) {
+        element.classList.remove("is-invalid");
+    });
+    // Очистка текста ошибки
+    let errorElements = document.querySelectorAll(".error-message");
+    errorElements.forEach(function (element) {
+        element.innerText = "";
+    });
+});
+
+editButton.addEventListener('click', function () {
     // Удаление класса "is-invalid" у всех элементов
     let invalidElements = document.querySelectorAll(".is-invalid");
     invalidElements.forEach(function (element) {

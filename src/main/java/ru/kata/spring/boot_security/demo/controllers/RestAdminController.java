@@ -2,17 +2,13 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.dto.PersonDTO;
-import ru.kata.spring.boot_security.demo.util.PersonNotFoundException;
-import ru.kata.spring.boot_security.demo.models.AdminResponse;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
@@ -31,10 +25,8 @@ import ru.kata.spring.boot_security.demo.util.PersonValidator;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,6 +54,8 @@ public class RestAdminController {
         Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
         PersonDTO currentUserDTO = convertToPersonDTO(person);
 
+        System.out.println(currentUserDTO);
+
         return new ResponseEntity<>(currentUserDTO, HttpStatus.OK);
     }
 
@@ -77,10 +71,6 @@ public class RestAdminController {
     public ResponseEntity<PersonDTO> getPerson(@PathVariable("userId") int userId) {
         PersonDTO personDTO = convertToPersonDTO(peopleService.getUserByID(userId));
 
-        if (personDTO == null) {
-            throw new PersonNotFoundException("Пользователя с ID: " + userId + " не существует в БД!");
-        }
-
         return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
 
@@ -90,14 +80,14 @@ public class RestAdminController {
         return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
-    @GetMapping("/roles/{id}")
-    public ResponseEntity<Set<Role>> getRole(@PathVariable("id") int id) {
-        return new ResponseEntity<>(peopleService.getUserByID(id).getRoleSet(), HttpStatus.OK);
-    }
+//    @GetMapping("/roles/{id}")
+//    public ResponseEntity<Set<Role>> getRole(@PathVariable("id") int id) {
+//        return new ResponseEntity<>(peopleService.getUserByID(id).getRoleSet(), HttpStatus.OK);
+//    }
 
     @PostMapping("/new-user")
-    public ResponseEntity<?> addNewUser(@RequestBody @Valid Person newPerson, BindingResult bindingResult) {
-        personValidator.validate(newPerson, bindingResult);
+    public ResponseEntity<?> addNewUser(@RequestBody @Valid PersonDTO newPersonDTO, BindingResult bindingResult) {
+        personValidator.validate(newPersonDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -106,14 +96,14 @@ public class RestAdminController {
             }
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        peopleService.addNewUser(newPerson);
-        return new ResponseEntity<>(newPerson, HttpStatus.CREATED);
+        peopleService.addNewUser(convertToPerson(newPersonDTO));
+        return new ResponseEntity<>(newPersonDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<?> updateUser(@RequestBody @Valid Person person, BindingResult bindingResult) {
-        person.setOldUserName(peopleService.getUserByID(person.getId()).getUserName());
-        personValidator.validate(person, bindingResult);
+    public ResponseEntity<?> updateUser(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
+        personDTO.setOldUserName(peopleService.getUserByID(personDTO.getId()).getUserName());
+        personValidator.validate(personDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -124,13 +114,13 @@ public class RestAdminController {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
 
-        peopleService.updateUser(person.getId(), person);
+        peopleService.updateUser(personDTO.getId(), convertToPerson(personDTO));
 
-        return new ResponseEntity<>(person, HttpStatus.OK);
+        return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Person> deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<PersonDTO> deleteUser(@PathVariable("id") int id) {
         peopleService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

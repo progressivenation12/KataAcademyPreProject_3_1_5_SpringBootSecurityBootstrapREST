@@ -14,7 +14,7 @@ function getAllUsers() {
 
             for (let user of users) {
 
-                rolesString = rolesToString(user.roleSet);
+                rolesString = rolesToStringForAdmin(user.roleSet);
 
                 dataOfUsers += `<tr>
                         <td>${user.id}</td>
@@ -46,13 +46,4 @@ function getAllUsers() {
             }
             tableUsers.innerHTML = dataOfUsers;
         })
-}
-
-function rolesToString(roles) {
-    let rolesString = '';
-    for (const element of roles) {
-        rolesString += (element.toString().replace('ROLE_', '') + ', ');
-    }
-    rolesString = rolesString.substring(0, rolesString.length - 2);
-    return rolesString;
 }

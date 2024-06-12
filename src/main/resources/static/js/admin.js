@@ -8,16 +8,16 @@ function getCurrentAdmin() {
         .then((userAdmin) => {
 
             let rolesStringAdmin = rolesToStringForAdmin(userAdmin.roleSet);
-            let data = '';
+            let dataOfAdmin = '';
 
-            data += `<tr>
+            dataOfAdmin += `<tr>
             <td>${userAdmin.id}</td>
             <td>${userAdmin.userName}</td>
             <td>${userAdmin.age}</td>
             <td>${userAdmin.email}</td>
             <td>${rolesStringAdmin}</td>
             </tr>`;
-            tableUserAdmin.innerHTML = data;
+            tableUserAdmin.innerHTML = dataOfAdmin;
 
             navbarBrandAdmin.innerHTML = `<b><span class="email">${userAdmin.email}</span></b>
                              <span class="roles">with roles:</span>
@@ -31,9 +31,17 @@ function rolesToStringForAdmin(roles) {
     let rolesString = '';
 
     for (const element of roles) {
-        rolesString += (element.toString().replace('ROLE_', '') + ', ');
+        if (roles.length > 1) {
+            rolesString += (element.roleName.toString().replace('ROLE_', '') + ', ');
+        } else {
+            rolesString += (element.roleName.toString().replace('ROLE_', ''));
+        }
     }
-    rolesString = rolesString.substring(0, rolesString.length - 2);
+
+    if (rolesString.charAt(rolesString.length - 2) === ',') {
+        rolesString = rolesString.substring(0, rolesString.length - 2);
+    }
+
     return rolesString;
 }
 

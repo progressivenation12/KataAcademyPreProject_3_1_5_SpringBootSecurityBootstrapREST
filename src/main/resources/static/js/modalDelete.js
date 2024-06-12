@@ -17,7 +17,7 @@ function loadRolesForDelete() {
             data.forEach(role => {
                 let option = document.createElement("option");
                 option.value = role.id;
-                option.text = role["roleName"].replace('ROLE_', '');
+                option.text = role.roleName.toString().replace('ROLE_', '');
                 selectDelete.appendChild(option);
             });
         })

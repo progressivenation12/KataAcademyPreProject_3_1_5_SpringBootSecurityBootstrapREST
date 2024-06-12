@@ -2,9 +2,12 @@ function loadRolesForEdit(selectedRoles = []) {
     let selectEdit = document.getElementById("edit-roleSet");
     selectEdit.innerHTML = "";
 
+    // console.log("Selected Roles:", selectedRoles);
+
     fetch("/api/admin/roles")
         .then(res => res.json())
         .then(data => {
+            // Сортировка ролей
             data.sort((a, b) => {
                 if (a.roleName.includes('ADMIN') && b.roleName.includes('USER')) {
                     return -1;
@@ -14,15 +17,18 @@ function loadRolesForEdit(selectedRoles = []) {
                 }
                 return 0;
             });
+
             data.forEach(role => {
                 let option = document.createElement("option");
                 option.value = role.id;
-                option.text = role["roleName"].replace('ROLE_', '');
+                option.text = role.roleName.toString().replace('ROLE_', '');
 
                 // Проверка, является ли selectedRoles массивом и содержит ли он выбранные роли
-                if (Array.isArray(selectedRoles) && selectedRoles.includes(role.roleName)) {
+                if (Array.isArray(selectedRoles) && selectedRoles.some(r => r.roleName === role.roleName)) {
                     option.selected = true;
                 }
+
+                // console.log("Adding role option:", role.roleName, option.selected);
                 selectEdit.appendChild(option);
             });
         })
@@ -78,8 +84,8 @@ function editUser() {
             modalEdit.hide();
 
             clearValidationErrors("edit");
-
             getAllUsers();
+            getCurrentAdmin();
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -87,20 +93,20 @@ function editUser() {
 }
 
 // Находим модальное окно
-let closeButton = document.getElementById('button-edit-modal');
+let closeButton = document.getElementById('button-close-edit-modal');
 
 // Добавляем обработчик события click
 closeButton.addEventListener('click', function () {
     // Удаление класса "is-invalid" у всех элементов
     let invalidElements = document.querySelectorAll(".is-invalid");
-    invalidElements.forEach(function(element) {
+    invalidElements.forEach(function (element) {
         element.classList.remove("is-invalid");
     });
     // Очистка текста ошибки
     let errorElements = document.querySelectorAll(".error-message");
-    errorElements.forEach(function(element) {
+    errorElements.forEach(function (element) {
         element.innerText = "";
     });
 });
 
-window.addEventListener("load", loadRolesForEdit);
+// window.addEventListener("load", loadRolesForEdit);

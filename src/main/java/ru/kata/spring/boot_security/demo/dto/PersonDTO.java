@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.dto;
 
+import ru.kata.spring.boot_security.demo.models.Role;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +41,7 @@ public class PersonDTO {
     private String password;
 
     @Size(min = 1, message = "Пожалуйста, выберите хотя бы одну роль.")
-    private Set<String> roleSet = new HashSet<>();
+    private Set<Role> roleSet = new HashSet<>();
 
     public int getId() {
         return id;
@@ -89,11 +91,11 @@ public class PersonDTO {
         this.password = password;
     }
 
-    public Set<String> getRoleSet() {
+    public Set<Role> getRoleSet() {
         return roleSet;
     }
 
-    public void setRoleSet(Set<String> roleSet) {
+    public void setRoleSet(Set<Role> roleSet) {
         this.roleSet = roleSet;
     }
 

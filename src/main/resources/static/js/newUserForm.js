@@ -5,10 +5,20 @@ function loadRolesForNewUser() {
     fetch("/api/admin/roles")
         .then(res => res.json())
         .then(data => {
+            data.sort((a, b) => {
+                if (a.roleName.includes('ADMIN') && b.roleName.includes('USER')) {
+                    return -1;
+                }
+                if (a.roleName.includes('USER') && b.roleName.includes('ADMIN')) {
+                    return 1;
+                }
+                return 0;
+            });
             data.forEach(role => {
                 let option = document.createElement("option");
                 option.value = role.id;
-                option.text = role["roleName"].replace('ROLE_', '');
+                option.text = role.roleName.toString().replace('ROLE_', '');
+
                 selectAdd.appendChild(option);
             });
         })

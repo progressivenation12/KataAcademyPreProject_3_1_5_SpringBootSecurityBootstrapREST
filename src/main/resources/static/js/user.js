@@ -1,4 +1,4 @@
-const URLNavbarUser = "http://localhost:8080/api/user/accountInfo";
+const URLNavbarUser = "/api/user/accountInfo";
 const navbarBrandUser = document.getElementById('navbarBrandUser');
 const tableUserUser = document.getElementById('tableUser');
 
@@ -29,9 +29,18 @@ getCurrentUser()
 
 function rolesToStringForUser(roles) {
     let rolesString = '';
-    for (let element of roles) {
-        rolesString += (element.toString().replace('ROLE_', '') + ', ');
+
+    for (const element of roles) {
+        if (roles.length > 1) {
+            rolesString += (element.roleName.toString().replace('ROLE_', '') + ', ');
+        } else {
+            rolesString += (element.roleName.toString().replace('ROLE_', ''));
+        }
     }
-    rolesString = rolesString.substring(0, rolesString.length - 2);
+
+    if (rolesString.charAt(rolesString.length - 2) === ',') {
+        rolesString = rolesString.substring(0, rolesString.length - 2);
+    }
+
     return rolesString;
 }

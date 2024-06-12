@@ -15,14 +15,15 @@ function fillModalFields(form, modal, id, type) {
             form.querySelector("#edit-email").value = user.email;
             form.querySelector("#edit-password").value = user.password;
 
-            // Загружаем роли только для редактирования
+            // console.log("User data for edit:", user.roleSet);
+
+            // Загружаю роли только для редактирования
             loadRolesForEdit(user.roleSet);
         } else if (type === "delete") {
             form.querySelector("#delete-id").value = user.id;
             form.querySelector("#delete-userName").value = user.userName;
             form.querySelector("#delete-age").value = user.age;
             form.querySelector("#delete-email").value = user.email;
-            // form.querySelector("#delete-password").value = user.password;
 
             // Не нужно загружать роли для удаления
         }

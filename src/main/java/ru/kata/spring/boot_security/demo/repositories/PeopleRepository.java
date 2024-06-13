@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
@@ -14,11 +15,11 @@ public interface PeopleRepository extends JpaRepository<Person, Integer> {
     Person findByUserName(@Param("username") String username);
 
     @Query(value = "SELECT p FROM Person p JOIN FETCH p.roleSet WHERE p.id=:id")
-    Person findById(@Param("id") int id);
+    Optional<Person> findById(@Param("id") int id);
 
     @Query(value = "SELECT DISTINCT p FROM Person p LEFT JOIN FETCH p.roleSet")
     List<Person> findAllWithRoles();
 
-    @Query(value = "SELECT COUNT(p) = 0 FROM Person p WHERE LOWER(p.email) = LOWER(:email) AND p.id <> :userId")
-    Person findByEmail(@Param("email") String email);
+//    @Query(value = "SELECT COUNT(p) = 0 FROM Person p WHERE LOWER(p.email) = LOWER(:email) AND p.id <> :userId")
+//    Person findByEmail(@Param("email") String email);
 }

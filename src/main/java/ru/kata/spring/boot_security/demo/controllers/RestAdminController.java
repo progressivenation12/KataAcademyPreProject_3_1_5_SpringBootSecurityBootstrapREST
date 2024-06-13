@@ -123,7 +123,9 @@ public class RestAdminController {
     private Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
+
     private PersonDTO convertToPersonDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }
+
 }

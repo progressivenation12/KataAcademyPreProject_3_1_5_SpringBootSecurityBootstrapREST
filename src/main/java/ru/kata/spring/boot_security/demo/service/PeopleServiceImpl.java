@@ -31,11 +31,12 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Override
     public Person getUserByID(int id) {
-        return peopleRepository.findById(id);
+        Optional<Person> foundUser = peopleRepository.findById(id);
+        return foundUser.orElse(null);
     }
 
     @Override
-    public Person getUserByUsername(String userName){
+    public Person getUserByUsername(String userName) {
         return peopleRepository.findByUserName(userName);
     }
 
@@ -49,7 +50,7 @@ public class PeopleServiceImpl implements PeopleService {
     @Transactional
     @Override
     public void updateUser(int id, Person updatePerson) {
-        Optional<Person> existingPersonOptional = Optional.ofNullable(peopleRepository.findById(id));
+        Optional<Person> existingPersonOptional = peopleRepository.findById(id);
 
         if (existingPersonOptional.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -71,7 +72,10 @@ public class PeopleServiceImpl implements PeopleService {
     @Transactional
     @Override
     public void deleteUser(int id) {
-        peopleRepository.deleteById(id);
+        Optional<Person> deleteUser = peopleRepository.findById(id);
+        if (deleteUser.isPresent()) {
+            peopleRepository.deleteById(id);
+        }
     }
 
 }

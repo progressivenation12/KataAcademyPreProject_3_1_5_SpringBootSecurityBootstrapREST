@@ -2,9 +2,6 @@ package ru.kata.spring.boot_security.demo.dto;
 
 import ru.kata.spring.boot_security.demo.models.Role;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -17,8 +14,6 @@ import java.util.Set;
 
 public class PersonDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotBlank(message = "Поле не должно быть пустым!")

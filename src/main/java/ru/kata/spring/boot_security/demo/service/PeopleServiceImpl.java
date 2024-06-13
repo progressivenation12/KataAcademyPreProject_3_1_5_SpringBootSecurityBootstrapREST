@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ public class PeopleServiceImpl implements PeopleService {
         Optional<Person> existingPersonOptional = Optional.ofNullable(peopleRepository.findById(id));
 
         if (existingPersonOptional.isEmpty()) {
-            throw new RuntimeException("User not found");
+            throw new EntityNotFoundException("User not found");
         }
 
         Person existingPerson = existingPersonOptional.get();

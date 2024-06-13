@@ -80,11 +80,6 @@ public class RestAdminController {
         return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
-//    @GetMapping("/roles/{id}")
-//    public ResponseEntity<Set<Role>> getRole(@PathVariable("id") int id) {
-//        return new ResponseEntity<>(peopleService.getUserByID(id).getRoleSet(), HttpStatus.OK);
-//    }
-
     @PostMapping("/new-user")
     public ResponseEntity<?> addNewUser(@RequestBody @Valid PersonDTO newPersonDTO, BindingResult bindingResult) {
         personValidator.validate(newPersonDTO, bindingResult);

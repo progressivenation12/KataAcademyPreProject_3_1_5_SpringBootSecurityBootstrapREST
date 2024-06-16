@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.dto.PersonDTO;
+import ru.kata.spring.boot_security.demo.exception_handling.NoSuchPersonException;
+import ru.kata.spring.boot_security.demo.exception_handling.PersonIncorrectData;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.service.PeopleService;
@@ -54,8 +57,6 @@ public class RestAdminController {
         Person person = (Person) userDetailsService.loadUserByUsername(principal.getName());
         PersonDTO currentUserDTO = convertToPersonDTO(person);
 
-        System.out.println(currentUserDTO);
-
         return new ResponseEntity<>(currentUserDTO, HttpStatus.OK);
     }
 
@@ -91,7 +92,9 @@ public class RestAdminController {
             }
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
+
         peopleService.addNewUser(convertToPerson(newPersonDTO));
+
         return new ResponseEntity<>(newPersonDTO, HttpStatus.CREATED);
     }
 
@@ -126,6 +129,14 @@ public class RestAdminController {
 
     private PersonDTO convertToPersonDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<PersonIncorrectData> handleException(NoSuchPersonException exception) {
+        PersonIncorrectData data = new PersonIncorrectData();
+        data.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
 }

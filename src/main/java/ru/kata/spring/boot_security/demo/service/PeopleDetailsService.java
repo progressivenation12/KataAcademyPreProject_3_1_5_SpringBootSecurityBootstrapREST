@@ -20,7 +20,7 @@ public class PeopleDetailsService implements UserDetailsService {
         Person person = peopleRepository.findByUserName(username);
 
         if (person == null) {
-            throw new UsernameNotFoundException("Пользователь не найден!");
+            throw new UsernameNotFoundException("Пользователь не найден в базе данных!");
         }
 
         return person;

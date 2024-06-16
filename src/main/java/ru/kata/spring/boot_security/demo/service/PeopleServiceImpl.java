@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.exception_handling.NoSuchPersonException;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
@@ -31,8 +32,13 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Override
     public Person getUserByID(int id) {
-        Optional<Person> foundUser = peopleRepository.findById(id);
-        return foundUser.orElse(null);
+        Optional<Person> foundPerson = peopleRepository.findById(id);
+
+        if (foundPerson.isEmpty()) {
+            throw new NoSuchPersonException("Пользователь с ID = " + id + " не найден в базе данных.");
+        }
+
+        return foundPerson.orElseThrow();
     }
 
     @Override
@@ -53,14 +59,16 @@ public class PeopleServiceImpl implements PeopleService {
         Optional<Person> existingPersonOptional = peopleRepository.findById(id);
 
         if (existingPersonOptional.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
+            throw new NoSuchPersonException("Пользователь с ID = " + id + " не найден в базе данных.");
         }
 
         Person existingPerson = existingPersonOptional.get();
 
         updatePerson.setId(id);
 
-        if (updatePerson.getPassword() != null && !updatePerson.getPassword().isEmpty() && !updatePerson.getPassword().equals(existingPerson.getPassword())) {
+        if (updatePerson.getPassword() != null
+            && !updatePerson.getPassword().isEmpty()
+            && !updatePerson.getPassword().equals(existingPerson.getPassword())) {
             updatePerson.setPassword(passwordEncoder.encode(updatePerson.getPassword()));
         } else {
             updatePerson.setPassword(existingPerson.getPassword());
@@ -72,10 +80,13 @@ public class PeopleServiceImpl implements PeopleService {
     @Transactional
     @Override
     public void deleteUser(int id) {
-        Optional<Person> deleteUser = peopleRepository.findById(id);
-        if (deleteUser.isPresent()) {
-            peopleRepository.deleteById(id);
+        Optional<Person> deletePersson = peopleRepository.findById(id);
+
+        if (deletePersson.isEmpty()) {
+            throw new NoSuchPersonException("Пользователь с ID = " + id + " не найден в базе данных.");
         }
+
+        peopleRepository.deleteById(id);
     }
 
 }

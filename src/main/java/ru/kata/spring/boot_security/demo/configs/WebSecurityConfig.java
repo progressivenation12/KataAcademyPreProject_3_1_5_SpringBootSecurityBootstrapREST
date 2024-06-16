@@ -26,35 +26,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Конфигурация АВТОРИЗАЦИИ
     // Конфигурация для самого Spring Security
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/login").permitAll()
-//                .antMatchers("/admin/", "/api/admin/**").hasRole("ADMIN")
-//                .antMatchers("/user/", "/api/user/**").hasAnyRole("USER", "ADMIN")
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/process_login")
-//                .successHandler(successUserHandler)
-//                .and()
-//                .logout()
-//                .logoutUrl("/logout")
-//                .logoutSuccessUrl("/login")
-//                .permitAll();
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().anyRequest().permitAll() // Разрешить все запросы без аутентификации
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/admin/", "/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/", "/api/user/**").hasAnyRole("USER", "ADMIN")
+                .anyRequest().authenticated()
                 .and()
-                .csrf().disable() // Отключить защиту CSRF, если это необходимо
-                .formLogin().disable() // Отключить форму логина, если она используется
-                .httpBasic().disable(); // Отключить базовую HTTP-аутентификацию, если используется
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/process_login")
+                .successHandler(successUserHandler)
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .permitAll();
     }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests().anyRequest().permitAll() // Разрешить все запросы без аутентификации
+//                .and()
+//                .csrf().disable() // Отключить защиту CSRF, если это необходимо
+//                .formLogin().disable() // Отключить форму логина, если она используется
+//                .httpBasic().disable(); // Отключить базовую HTTP-аутентификацию, если используется
+//    }
 
     // Настройка аутентификации
     @Bean

@@ -55,12 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .httpBasic().disable(); // Отключить базовую HTTP-аутентификацию, если используется
 //    }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(getPasswordEncoder());
-//    }
-
     // Настройка аутентификации
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder) {

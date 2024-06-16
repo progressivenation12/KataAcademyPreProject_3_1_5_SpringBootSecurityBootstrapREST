@@ -37,6 +37,7 @@ async function deleteModal(id) {
 function deleteUser() {
     formDelete.addEventListener("submit", ev => {
         ev.preventDefault();
+
         fetch(URLDelete + formDelete.id.value, {
             method: 'DELETE',
             headers: {

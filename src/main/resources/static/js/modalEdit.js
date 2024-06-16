@@ -122,5 +122,3 @@ editButton.addEventListener('click', function () {
         element.innerText = "";
     });
 });
-
-// window.addEventListener("load", loadRolesForEdit);

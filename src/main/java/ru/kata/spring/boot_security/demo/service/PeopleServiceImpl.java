@@ -8,7 +8,6 @@ import ru.kata.spring.boot_security.demo.exception_handling.NoSuchPersonExceptio
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 

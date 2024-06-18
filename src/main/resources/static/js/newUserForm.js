@@ -32,6 +32,8 @@ createNewUser();
 const URLNewUser = "api/admin/new-user/";
 
 function createNewUser() {
+    const csrfToken = getCsrfToken();
+
     formNew.addEventListener("submit", ev => {
         ev.preventDefault();
 
@@ -54,7 +56,8 @@ function createNewUser() {
         fetch(URLNewUser, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken
             },
             body: JSON.stringify(userData)
         }).then(response => {

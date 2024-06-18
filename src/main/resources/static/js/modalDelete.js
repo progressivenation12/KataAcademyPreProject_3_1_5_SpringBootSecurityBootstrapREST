@@ -35,13 +35,16 @@ async function deleteModal(id) {
 }
 
 function deleteUser() {
+    const csrfToken = getCsrfToken();
+
     formDelete.addEventListener("submit", ev => {
         ev.preventDefault();
 
         fetch(URLDelete + formDelete.id.value, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken
             }
         }).then(() => {
             const modalEdit = bootstrap.Modal.getInstance(document.querySelector('#deleteModal'));

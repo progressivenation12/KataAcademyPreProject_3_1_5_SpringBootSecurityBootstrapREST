@@ -46,6 +46,8 @@ async function editModal(id) {
 }
 
 function editUser() {
+    const csrfToken = getCsrfToken();
+
     formEdit.addEventListener("submit", ev => {
         ev.preventDefault();
 
@@ -70,7 +72,8 @@ function editUser() {
         fetch(URLEdit, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken
             },
             body: JSON.stringify(userData)
         }).then(response => {

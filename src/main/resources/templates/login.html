@@ -53,7 +53,7 @@
     <div class="login-card">
         <h2 class="text-center mb-2">Please sign in</h2>
         <form name="f" method="POST" action="/process_login">
-<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="form-group">
                 <label for="username" class="form-label"></label>
                 <input type="text" class="form-control" name="username" id="username" placeholder="Username" required
